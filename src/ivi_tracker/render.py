@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
@@ -32,6 +33,14 @@ def link(key: str) -> str:
     return f"[{key}]({base}/browse/{key})"
 
 
+ISSUE_KEY = re.compile(r"(?<![\w\[/-])([A-Z][A-Z0-9]+-\d+)(?![\w\]])")
+
+
+def linkify(text: str) -> str:
+    """Turn bare issue keys in drafted narrative into Jira links (keys already inside links are left alone)."""
+    return ISSUE_KEY.sub(lambda m: link(m.group(1)), text)
+
+
 def pct(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.1f}%"
 
@@ -44,7 +53,7 @@ def examples(keys: list[str], n: int = 5) -> str:
 def environment(stale_days: int) -> Environment:
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), undefined=StrictUndefined,
                       trim_blocks=False, lstrip_blocks=True, keep_trailing_newline=True)
-    env.globals.update(cell=cell, link=link, pct=pct, examples=examples, rag=RAG_ICON.get,
+    env.globals.update(cell=cell, link=link, linkify=linkify, pct=pct, examples=examples, rag=RAG_ICON.get,
                        hygiene_label=lambda c: HYGIENE_LABEL.get(c, c).replace("30", str(stale_days)))
     return env
 

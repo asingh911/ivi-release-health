@@ -267,3 +267,23 @@ def test_open_trend_rebuilds_open_counts():
     assert rows[-1] == {"week_ending": "2026-10-04", "open": 7, "open_blocker_critical": 5}
     # 2026-09-20: SPEC-4 resolved that day (not open); SPEC-3/8/9/10 not created yet
     assert rows[0]["open"] == 3 and rows[0]["open_blocker_critical"] == 2
+
+
+# ---------- verdict ----------
+
+def test_verdict_leads_with_worst_release_and_its_blockers(cfg):
+    from ivi_tracker.analysis import verdict
+    v = verdict(analyze(ISSUES, VERSIONS, AS_OF, cfg, 30))
+    # Rel 0.9 and Rel 2.0 are both Red; readiness sorts Red by date, so Rel 0.9 comes first
+    assert v["worst"]["name"] == "Rel 0.9" and v["worst"]["rag"] == "Red"
+    assert [r["name"] for r in v["others"]] == ["Rel 2.0", "Rel 3.0"]
+    assert v["culprits"] == []                      # Rel 0.9 is Red for its passed date, not a blocker
+    assert (v["escalations"], v["open_blocker_critical"], v["unowned_blocker_critical"]) == (3, 5, 1)
+
+
+def test_verdict_names_the_blocking_issue(cfg):
+    from ivi_tracker.analysis import verdict
+    versions = [v for v in VERSIONS if v["id"] != "v5"]          # drop Rel 0.9
+    v = verdict(analyze(ISSUES, versions, AS_OF, cfg, 30))
+    assert v["worst"]["name"] == "Rel 2.0"
+    assert [c["key"] for c in v["culprits"]] == ["SPEC-1"]

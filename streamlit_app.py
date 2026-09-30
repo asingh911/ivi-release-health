@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import copy
 import hmac
+import html
 import json
 import os
 import sys
@@ -31,9 +32,28 @@ from ivi_tracker import analysis, llm, metrics, render, store  # noqa: E402
 from ivi_tracker.config import load_config  # noqa: E402
 
 load_dotenv(ROOT / ".env")
-st.set_page_config(page_title="IVI Release Health", page_icon="🚗", layout="wide")
+APP_NAME = "AGL Release Health"
+st.set_page_config(page_title=APP_NAME, page_icon="🚗", layout="wide")
 
 SERIES_BLUE = "#2a78d6"   # categorical slot 1 (validated reference palette)
+# Reserved status colors (reference palette): never reused for series, always paired with a text label.
+STATUS = {"Red": "#d03b3b", "Amber": "#fab219", "Green": "#0ca30c", "No date": "#8a8984", "Released": "#8a8984"}
+
+STYLES = """
+<style>
+.verdict { border: 1px solid rgba(128,128,128,.28); border-radius: 10px; padding: 1.1rem 1.25rem;
+           margin: .25rem 0 1rem; }
+.verdict h2 { font-size: 1.45rem; line-height: 1.3; margin: 0 0 .35rem; padding: 0; font-weight: 700; }
+.verdict p { margin: .2rem 0; }
+.verdict .quiet, .glance { opacity: .72; font-size: .92rem; }
+.glance { margin: 0 0 1.25rem; }
+.rag { display: inline-flex; align-items: center; gap: .4em; padding: .1em .6em .12em; border-radius: 999px;
+       font-size: .8em; font-weight: 600; vertical-align: .12em; background: var(--rag-bg); white-space: nowrap; }
+.rag::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--rag); }
+.stMarkdown table, .verdict { font-variant-numeric: tabular-nums; }
+::selection { background: rgba(42,120,214,.35); }
+</style>
+"""
 RULE_GRAY = "#9a9893"
 WINDOWS = [7, 14, 30, 60, 90]
 
@@ -78,7 +98,7 @@ def require_password() -> None:
             st.rerun()
         st.session_state.bad_link = True
 
-    st.title("IVI Release Health")
+    st.title(APP_NAME)
     if st.session_state.pop("bad_link", False):
         st.error("That link isn't valid anymore. Ask the person who shared it for a new one.")
     if not expected:
@@ -188,6 +208,49 @@ def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
 
 # ---------- views ----------
 
+def rag_pill(rag: str) -> str:
+    color = STATUS[rag]
+    return (f'<span class="rag" style="--rag:{color};--rag-bg:{color}29">{html.escape(rag)}</span>')
+
+
+def rag_cell_style(value: str) -> str:
+    color = STATUS.get(value)
+    return f"background-color: {color}33; font-weight: 600" if color else ""
+
+
+def show_verdict(a: dict, window: int) -> None:
+    """Lead with the answer: the worst release, what blocks it, and what needs escalating."""
+    v = analysis.verdict(a)
+    worst, parts = v["worst"], []
+    if worst is None:
+        parts.append("<h2>No unreleased versions have open work</h2>")
+    elif worst["rag"] == "Green":
+        parts.append(f"<h2>{rag_pill('Green')} All active releases are on track</h2>")
+    else:
+        state = "is at risk" if worst["rag"] == "Red" else "needs attention"
+        parts.append(f"<h2>{rag_pill(worst['rag'])} {html.escape(worst['name'])} {state}</h2>")
+        for c in v["culprits"][:2]:
+            parts.append(f'<p>Blocked by <a href="{browse(c["key"])}" target="_blank">{c["key"]}</a> '
+                         f'{html.escape(c["summary"])} · {c["priority"]}, idle {c["idle_days"]} days</p>')
+        if worst.get("rag_basis", "full") != "full":
+            parts.append('<p class="quiet">Rated on blockers, criticals, and slips: Jira has no release date '
+                         'for this version.</p>')
+    if v["others"]:
+        others = " · ".join(f"{html.escape(r['name'])} {rag_pill(r['rag'])}" for r in v["others"])
+        parts.append(f'<p class="quiet">Other active releases: {others}</p>')
+    st.markdown(f'<div class="verdict">{"".join(parts)}</div>', unsafe_allow_html=True)
+
+    attention = [f"<strong>{v['escalations']}</strong> issues need escalation"]
+    if v["unowned_blocker_critical"]:
+        attention.append(f"<strong>{v['unowned_blocker_critical']}</strong> open Blocker/Critical issues have "
+                         "no owner")
+    attention.append(f"<strong>{v['open_blocker_critical']}</strong> open Blocker/Critical overall")
+    f = a["flow"]
+    st.markdown(f'<p>{" · ".join(attention)}</p><p class="glance">{a["open_total"]} open issues · '
+                f'{f["new"]} new and {f["resolved"]} resolved in the last {window} days '
+                f'(net {f["net"]:+d})</p>', unsafe_allow_html=True)
+
+
 def link_column(label: str = "Key"):
     return st.column_config.LinkColumn(label, display_text=r"https?://.*/browse/(.*)")
 
@@ -215,16 +278,16 @@ def trend_chart(df: pd.DataFrame, field: str, title: str) -> alt.LayerChart:
 def show_status(a: dict, drafts: llm.Drafts) -> None:
     s = drafts.status_sections
     st.subheader("Summary")
-    st.markdown(s["Summary"])
+    st.markdown(render.linkify(s["Summary"]))
 
     st.subheader("Release readiness")
     rows = a["readiness"]["rows"]
     st.dataframe(pd.DataFrame([{
-        "Version": r["name"], "RAG": render.RAG_ICON[r["rag"]],
+        "Version": r["name"], "RAG": r["rag"],
         "Release date": r["release_date"] or "no date", "Scope": r["scope"],
         "Done %": r["done_pct"], "Open": r["open"],
         "Open blockers": r["open_blockers"], "Open criticals": r["open_criticals"],
-    } for r in rows]), hide_index=True, use_container_width=True,
+    } for r in rows]).style.map(rag_cell_style, subset=["RAG"]), hide_index=True, use_container_width=True,
         column_config={"Done %": st.column_config.ProgressColumn(format="%.1f%%", min_value=0, max_value=100)})
     if any(r.get("rag_basis", "full") not in ("full",) and r["rag"] != "Released" for r in rows):
         st.caption("Undated versions are rated on blockers, criticals, and slips only.")
@@ -245,7 +308,7 @@ def show_status(a: dict, drafts: llm.Drafts) -> None:
         st.write("No open Blocker or Critical issues.")
 
     st.subheader("Risks & slips")
-    st.markdown(s["Risks & slips"])
+    st.markdown(render.linkify(s["Risks & slips"]))
     if a["past_due"]:
         st.dataframe(pd.DataFrame([{"Key": browse(p["key"]), "Version": p["version"], "Priority": p["priority"],
                                     "Why": f"open in a {p['reason']} version"} for p in a["past_due"]]),
@@ -258,9 +321,9 @@ def show_status(a: dict, drafts: llm.Drafts) -> None:
             st.markdown(", ".join(render.link(k) for k in keys) or "None")
 
     st.subheader("Asks / decisions needed")
-    st.markdown(s["Asks / decisions needed"])
+    st.markdown(render.linkify(s["Asks / decisions needed"]))
     st.subheader("Next steps")
-    st.markdown(s["Next steps"])
+    st.markdown(render.linkify(s["Next steps"]))
 
 
 def artifact_body(markdown: str) -> str:
@@ -293,7 +356,12 @@ def show_trends(issues: list[dict], as_of: date) -> None:
 def main() -> None:
     require_password()
     defaults = load_config()
-    data = load_data()
+    try:
+        data = load_data()
+    except (FileNotFoundError, OSError, ValueError):
+        st.error("No report data yet. The weekly job writes `data/app/data.json.gz`; run "
+                 "`python -m ivi_tracker run` or trigger the workflow, then reload.")
+        st.stop()
     issues, versions = data["issues"], data["versions"]
     as_of = date.fromisoformat(data["as_of"])
     cfg, window = sidebar_settings(defaults, versions)
@@ -312,31 +380,29 @@ def main() -> None:
     else:
         drafts, source = llm.placeholder_drafts(facts), None
 
-    st.title("AGL Release Health")
-    st.caption(f"Automotive Grade Linux public Jira (project SPEC) · data as of {data['as_of']} · "
-               f"{len(issues):,} issues · window {window} days")
+    st.markdown(STYLES, unsafe_allow_html=True)
+    st.title(APP_NAME)
+    st.markdown("Weekly release health for Automotive Grade Linux, an open-source in-vehicle infotainment "
+                "platform, computed from its public Jira backlog.")
+    st.caption(f"Project SPEC · {len(issues):,} issues · data as of {data['as_of']} · window {window} days")
 
-    f = a["flow"]
-    k = st.columns(6)
-    k[0].metric("Open issues", a["open_total"])
-    k[1].metric(f"New ({window}d)", f["new"])
-    k[2].metric(f"Resolved ({window}d)", f["resolved"])
-    k[3].metric("Net change", f"{f['net']:+d}")
-    k[4].metric("Open blockers & criticals", len(a["blockers"]))
-    k[5].metric("Escalations", len(a["escalations"]))
+    show_verdict(a, window)
 
     cap = int(defaults.get("app", {}).get("max_ai_drafts_per_day", 20))
     if source == "weekly":
-        st.info("Narrative: AI draft from the weekly run (settings match it). Every number is checked against "
-                "the computed facts.", icon="✅")
+        st.caption(":material/verified: Narrative drafted by AI in the weekly run. Every number in it is checked "
+                   "against the computed facts.")
     elif source == "session":
-        st.info("Narrative: AI draft for your current settings, checked by the number guard.", icon="✅")
+        st.caption(":material/verified: Narrative drafted by AI for your settings. Every number in it is checked "
+                   "against the computed facts.")
     else:
-        left = ai_remaining(cap)
-        c1, c2 = st.columns([3, 1])
-        c1.warning("Settings differ from the weekly run, so the narrative isn't drafted yet. The tables below "
-                   "are already up to date.", icon="✏️")
-        if c2.button(f"Draft with AI ({left} left today)", disabled=left == 0 or not secret("OPENAI_API_KEY"),
+        left, has_key = ai_remaining(cap), bool(secret("OPENAI_API_KEY"))
+        c1, c2 = st.columns([3, 1], vertical_alignment="center")
+        c1.warning("Your settings differ from the weekly run. The tables are up to date; the written narrative "
+                   "isn't yet.", icon=":material/edit_note:")
+        why = None if has_key and left else ("AI drafting isn't configured on this app." if not has_key
+                                            else "Today's AI drafts are used up. Try again tomorrow.")
+        if c2.button(f"Draft with AI ({left} left today)", disabled=why is not None, help=why,
                      use_container_width=True, type="primary"):
             if spend_ai_draft(cap):
                 os.environ.setdefault("OPENAI_API_KEY", secret("OPENAI_API_KEY") or "")

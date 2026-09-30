@@ -60,3 +60,26 @@ def console_summary(a: dict) -> str:
         lines.append(f"  {e['key']:<10} {e['rule']:<10} {e['priority']:<8} "
                      f"open {e['age_days']:>4}d, idle {e['idle_days']:>4}d")
     return "\n".join(lines)
+
+
+RAG_SEVERITY = {"Red": 0, "Amber": 1, "Green": 2, "No date": 3, "Released": 4}
+
+
+def verdict(a: dict) -> dict:
+    """The at-a-glance answer: the worst unreleased version, what blocks it, and what needs escalating.
+
+    Everything here is counted from the analysis; nothing is drafted.
+    """
+    active = [r for r in a["readiness"]["rows"] if r["rag"] != "Released"]
+    worst = min(active, key=lambda r: RAG_SEVERITY[r["rag"]], default=None)
+    blockers_by_key = {b["key"]: b for b in a["blockers"]}
+    culprits = [blockers_by_key[k] for k in (worst["open_keys"] if worst else []) if k in blockers_by_key]
+    unowned = [b for b in a["blockers"] if not b["assigned"]]
+    return {
+        "worst": worst,
+        "culprits": culprits,
+        "others": [r for r in active if r is not worst],
+        "escalations": len(a["escalations"]),
+        "open_blocker_critical": len(a["blockers"]),
+        "unowned_blocker_critical": len(unowned),
+    }

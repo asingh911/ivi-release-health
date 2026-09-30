@@ -4,7 +4,7 @@
 
 ## Summary
 
-{{ d.status_sections["Summary"] }}
+{{ linkify(d.status_sections["Summary"]) }}
 
 ## Release readiness
 
@@ -32,7 +32,7 @@ No open Blocker or Critical issues.
 {% endif %}
 ## Risks & slips
 
-{{ d.status_sections["Risks & slips"] }}
+{{ linkify(d.status_sections["Risks & slips"]) }}
 
 {% if a.past_due -%}
 | Key | Version | Priority | Why it counts as a slip |
@@ -52,7 +52,7 @@ No open issues in released or past-due versions.
 {% endfor %}
 ## Asks / decisions needed
 
-{{ d.status_sections["Asks / decisions needed"] }}
+{{ linkify(d.status_sections["Asks / decisions needed"]) }}
 
 ## This period
 
@@ -62,4 +62,4 @@ No open issues in released or past-due versions.
 
 ## Next steps
 
-{{ d.status_sections["Next steps"] }}
+{{ linkify(d.status_sections["Next steps"]) }}

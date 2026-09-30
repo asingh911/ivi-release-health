@@ -45,19 +45,20 @@ def test_dashboard_renders_after_login(monkeypatch):
     assert not at.exception
     assert at.title[0].value == "AGL Release Health"
     assert [t.label for t in at.tabs] == ["Weekly status", "Bug review", "Escalations", "Trends", "Download"]
-    assert len(at.metric) == 6
+    page = " ".join(m.value for m in at.markdown)
+    assert "is at risk" in page and "need escalation" in page     # verdict band leads the page
 
 
 def test_default_settings_reuse_weekly_ai_draft(monkeypatch):
     at = login(app(monkeypatch))
-    assert any("weekly run" in i.value for i in at.info)
+    assert any("weekly run" in c.value for c in at.caption)
 
 
 def test_changed_settings_recompute_and_offer_ai(monkeypatch):
     at = login(app(monkeypatch))
     at.select_slider(key="s_window").set_value(7).run()
     assert not at.exception
-    assert at.metric[1].label == "New (7d)"
+    assert any("in the last 7 days" in m.value for m in at.markdown)
     assert any("differ from the weekly run" in w.value for w in at.warning)
 
 

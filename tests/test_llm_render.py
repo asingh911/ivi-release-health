@@ -177,3 +177,10 @@ def test_tables_have_no_blank_lines_inside(analysis, facts, cfg, tmp_path):
         for prev, line, nxt in zip(lines, lines[1:], lines[2:]):
             if prev.startswith("|") and nxt.startswith("|"):
                 assert line.startswith("|"), f"table broken in {name}"
+
+
+def test_linkify_links_bare_keys_only():
+    text = "Assign SPEC-12 and [SPEC-3](https://x/browse/SPEC-3); not ASPEC-9x."
+    out = render.linkify(text)
+    assert out.startswith("Assign [SPEC-12](") and out.count("[SPEC-3]") == 1
+    assert "ASPEC-9x" in out
