@@ -53,7 +53,7 @@ def examples(keys: list[str], n: int = 5) -> str:
 def environment(stale_days: int) -> Environment:
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), undefined=StrictUndefined,
                       trim_blocks=False, lstrip_blocks=True, keep_trailing_newline=True)
-    env.globals.update(cell=cell, link=link, linkify=linkify, pct=pct, examples=examples, rag=RAG_ICON.get,
+    env.globals.update(cell=cell, link=link, linkify=linkify, narrative=narrative, pct=pct, examples=examples, rag=RAG_ICON.get,
                        hygiene_label=lambda c: HYGIENE_LABEL.get(c, c).replace("30", str(stale_days)))
     return env
 
@@ -65,7 +65,7 @@ def render_strings(a: dict, drafts: Drafts, cfg: dict) -> dict[str, str]:
     """Render the three artifacts to markdown strings, keyed by artifact name."""
     env = environment(cfg["stale_days"])
     ctx = {"a": a, "d": drafts, "reviewer": cfg.get("reviewer", "<reviewer>"),
-           "items": a["blockers"][: cfg["agenda_size"]]}
+           "items": a["agenda"][: cfg["agenda_size"]]}
     return {name: _tidy(env.get_template(f"{name}.md.j2").render(**ctx)) for name in ARTIFACTS}
 
 
@@ -90,6 +90,14 @@ def drafts_to_dict(d: Drafts) -> dict:
 def drafts_from_dict(data: dict) -> Drafts:
     return Drafts(data["status_sections"], data["agenda_questions"], data["escalation_notes"],
                   data.get("tokens", 0))
+
+
+NOT_DRAFTED = "_Narrative not drafted for these settings._"
+
+
+def narrative(text: str) -> str:
+    """A drafted section with issue keys linked, or a plain note when it wasn't drafted."""
+    return linkify(text) if text else NOT_DRAFTED
 
 
 def _tidy(text: str) -> str:

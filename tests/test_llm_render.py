@@ -161,13 +161,17 @@ def test_render_writes_three_artifacts(analysis, facts, cfg, tmp_path):
     agenda = (out / "bug_review.md").read_text()
     assert "Is this \\| still reproducible?" in agenda          # pipes escaped inside table cells
     esc = (out / "escalations.md").read_text()
-    assert "| E2, E4 |" in esc and "Name an owner this week." in esc
+    assert "| Critical stalled, no owner |" in esc and "Name an owner this week." in esc
     assert json.loads((out / "facts.json").read_text()) == facts
 
 
 def test_render_with_placeholders(analysis, facts, cfg, tmp_path):
     out = render.render_all(analysis, llm.placeholder_drafts(facts), facts, cfg, out_root=tmp_path)
-    assert "_Not drafted" in (out / "weekly_status.md").read_text()
+    status = (out / "weekly_status.md").read_text()
+    assert render.NOT_DRAFTED in status and "--no-llm" not in status
+    # no empty AI columns when nothing was drafted
+    assert "Question to resolve" not in (out / "bug_review.md").read_text()
+    assert "Escalation note" not in (out / "escalations.md").read_text()
 
 
 def test_tables_have_no_blank_lines_inside(analysis, facts, cfg, tmp_path):
@@ -184,3 +188,27 @@ def test_linkify_links_bare_keys_only():
     out = render.linkify(text)
     assert out.startswith("Assign [SPEC-12](") and out.count("[SPEC-3]") == 1
     assert "ASPEC-9x" in out
+
+
+# ---------- reusing an earlier narrative ----------
+
+def test_reuse_keeps_text_whose_numbers_are_still_true(facts):
+    saved = llm.Drafts(
+        status_sections={"Summary": "SPEC-1 idle 10 days.", "Risks & slips": "SPEC-1 blocks Rel 2.0.",
+                         "Asks / decisions needed": "Close 999 stale issues.", "Next steps": "Triage SPEC-77."},
+        agenda_questions={i["key"]: "Who owns this?" for i in facts["agenda_items"]},
+        escalation_notes={e["key"]: "Idle 12345 days; decide." for e in facts["escalations"]})
+    d = llm.reuse_drafts(saved, facts)
+    assert d.status_sections["Summary"] and d.status_sections["Risks & slips"]
+    assert d.status_sections["Asks / decisions needed"] == ""      # 999 is not a fact
+    assert d.status_sections["Next steps"] == ""                   # SPEC-77 is not in the facts
+    assert len(d.agenda_questions) == len(facts["agenda_items"])
+    assert d.escalation_notes == {}                                # 12345 is not a fact
+    assert not d.complete
+
+
+def test_reuse_of_a_fully_true_narrative_is_complete(facts):
+    saved = llm.Drafts({s: "SPEC-1 needs an owner." for s in llm.STATUS_SECTIONS},
+                       {i["key"]: "Owner?" for i in facts["agenda_items"]},
+                       {e["key"]: "Assign it." for e in facts["escalations"]})
+    assert llm.reuse_drafts(saved, facts).complete

@@ -4,7 +4,7 @@
 
 ## Summary
 
-{{ linkify(d.status_sections["Summary"]) }}
+{{ narrative(d.status_sections["Summary"]) }}
 
 ## Release readiness
 
@@ -22,17 +22,17 @@ Undated versions are rated on blockers, criticals, and slips only (Jira has no r
 ## Blockers & criticals
 
 {% if a.blockers -%}
-| Key | Summary | Component | Priority | Age | Idle |
+| Key | Summary | Release | Priority | Age (days) | Idle (days) |
 |---|---|---|---|---|---|
 {% for b in a.blockers -%}
-| {{ link(b.key) }} | {{ cell(b.summary) }} | {{ cell(b.component) }} | {{ b.priority }} | {{ b.age_days }}d | {{ b.idle_days }}d |
+| {{ link(b.key) }} | {{ cell(b.summary) }} | {{ cell(b.releases | join(", ") or "none") }} | {{ b.priority }} | {{ b.age_days }} | {{ b.idle_days }} |
 {% endfor %}
 {%- else -%}
 No open Blocker or Critical issues.
 {% endif %}
 ## Risks & slips
 
-{{ linkify(d.status_sections["Risks & slips"]) }}
+{{ narrative(d.status_sections["Risks & slips"]) }}
 
 {% if a.past_due -%}
 | Key | Version | Priority | Why it counts as a slip |
@@ -52,7 +52,7 @@ No open issues in released or past-due versions.
 {% endfor %}
 ## Asks / decisions needed
 
-{{ linkify(d.status_sections["Asks / decisions needed"]) }}
+{{ narrative(d.status_sections["Asks / decisions needed"]) }}
 
 ## This period
 
@@ -62,4 +62,4 @@ No open issues in released or past-due versions.
 
 ## Next steps
 
-{{ linkify(d.status_sections["Next steps"]) }}
+{{ narrative(d.status_sections["Next steps"]) }}

@@ -123,7 +123,7 @@ def build_facts(a: dict, cfg: dict) -> dict:
              "rule_text": "; ".join(a["escalation_rules"][rid] for rid in e["rules"])}
             for e in a["escalations"]
         ],
-        "agenda_items": [issue_facts(b) for b in a["blockers"][:agenda_size]],
+        "agenda_items": [issue_facts(b) for b in a["agenda"][:agenda_size]],
     }
 
 
@@ -165,6 +165,7 @@ class Drafts:
     escalation_notes: dict[str, str]
     tokens: int = 0
     retries: list[str] = field(default_factory=list)
+    complete: bool = True     # False when some narrative is missing (not drafted, or no longer true)
 
 
 def split_sections(markdown: str) -> dict[str, str]:
@@ -252,10 +253,30 @@ def draft_all(facts: dict, complete: CompleteFn) -> Drafts:
 
 
 def placeholder_drafts(facts: dict) -> Drafts:
-    """Used with --no-llm: tables render, narrative is clearly marked as not drafted."""
-    note = "_Not drafted: run without `--no-llm` to generate this section._"
-    return Drafts(
-        status_sections={s: note for s in STATUS_SECTIONS},
-        agenda_questions={i["key"]: "_not drafted_" for i in facts["agenda_items"]},
-        escalation_notes={e["key"]: "_not drafted_" for e in facts["escalations"]},
-    )
+    """No narrative (--no-llm, or settings nothing was drafted for): tables render, narrative is left out."""
+    return Drafts(status_sections={s: "" for s in STATUS_SECTIONS}, agenda_questions={}, escalation_notes={},
+                  complete=False)
+
+
+ISSUE_KEY = re.compile(r"\b[A-Z][A-Z0-9]+-\d+\b")
+
+
+def _still_true(text: str, facts: dict, known_keys: set[str]) -> bool:
+    """A drafted sentence stays usable if every number it cites and every issue it names is still in the facts."""
+    return bool(text) and not number_guard(text, facts) and set(ISSUE_KEY.findall(text)) <= known_keys
+
+
+def reuse_drafts(saved: Drafts, facts: dict) -> Drafts:
+    """Keep the parts of an earlier narrative that remain true for new facts; drop the rest.
+
+    Runs the same number guard the drafting step uses, so reused text meets the same bar as fresh text.
+    """
+    known = set(ISSUE_KEY.findall(json.dumps(facts)))
+    sections = {s: (v if _still_true(v, facts, known) else "") for s, v in saved.status_sections.items()}
+    agenda = {i["key"]: saved.agenda_questions[i["key"]] for i in facts["agenda_items"]
+              if _still_true(saved.agenda_questions.get(i["key"], ""), facts, known)}
+    notes = {e["key"]: saved.escalation_notes[e["key"]] for e in facts["escalations"]
+             if _still_true(saved.escalation_notes.get(e["key"], ""), facts, known)}
+    complete = (all(sections.values()) and len(agenda) == len(facts["agenda_items"])
+                and len(notes) == len(facts["escalations"]))
+    return Drafts(sections, agenda, notes, complete=complete)

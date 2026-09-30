@@ -287,3 +287,29 @@ def test_verdict_names_the_blocking_issue(cfg):
     v = verdict(analyze(ISSUES, versions, AS_OF, cfg, 30))
     assert v["worst"]["name"] == "Rel 2.0"
     assert [c["key"] for c in v["culprits"]] == ["SPEC-1"]
+
+
+# ---------- agenda order and escalation ranking ----------
+
+def test_issues_carry_their_release_and_risk(cfg):
+    a = analyze(ISSUES, VERSIONS, AS_OF, cfg, 30)
+    rows = {b["key"]: b for b in a["blockers"]}
+    assert rows["SPEC-1"]["releases"] == ["Rel 2.0"] and rows["SPEC-1"]["at_risk"]      # Rel 2.0 is Red
+    assert rows["SPEC-8"]["releases"] == ["Rel 3.0"] and rows["SPEC-8"]["at_risk"]      # Rel 3.0 is Amber
+    assert rows["SPEC-9"]["releases"] == [] and not rows["SPEC-9"]["at_risk"]
+    assert a["open_unscoped"] == 3
+
+
+def test_agenda_puts_at_risk_releases_first(cfg):
+    a = analyze(ISSUES, VERSIONS, AS_OF, cfg, 30)
+    # at-risk: SPEC-1 (Blocker), SPEC-8 (Critical); then the rest by priority, then idle
+    assert [b["key"] for b in a["agenda"]] == ["SPEC-1", "SPEC-8", "SPEC-10", "SPEC-9", "SPEC-2"]
+
+
+def test_chase_first_ranks_at_risk_then_unowned(cfg):
+    from ivi_tracker.analysis import chase_first
+    a = analyze(ISSUES, VERSIONS, AS_OF, cfg, 30)
+    assert [e["key"] for e in chase_first(a)] == ["SPEC-1", "SPEC-2", "SPEC-3"]
+    reasons = {e["key"]: e["reason"] for e in a["escalations"]}
+    assert reasons == {"SPEC-1": "Blocker stalled", "SPEC-2": "Critical stalled, no owner",
+                       "SPEC-3": "Open in a released version"}

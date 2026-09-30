@@ -20,6 +20,21 @@ RULE_TEXT = {
 }
 
 
+# Plain-language names for the rules, shown in place of the E1-E4 codes.
+RULE_SHORT = {
+    "E1": "{priority} stalled",
+    "E2": "{priority} stalled",
+    "E3": "Open in a released version",
+    "E4": "No owner",
+}
+
+
+def rule_labels(rule_ids: list[str], esc_cfg: dict) -> str:
+    """'Blocker stalled, no owner': sentence case, so joined labels read as one phrase."""
+    labels = [RULE_SHORT[r].format(priority=esc_cfg.get(r, {}).get("priority", "")) for r in rule_ids]
+    return ", ".join([labels[0]] + [l[0].lower() + l[1:] for l in labels[1:]]) if labels else ""
+
+
 def _aging_rule(rule: dict, issue: dict, as_of: date) -> bool:
     return (issue["priority"] == rule["priority"]
             and age_days(issue, as_of) > rule["min_age_days"]
@@ -58,7 +73,7 @@ def evaluate(issues: list[dict], versions: list[dict], as_of: date, esc_cfg: dic
             rows.append({
                 "key": i["key"], "summary": i["summary"], "priority": i["priority"],
                 "component": ", ".join(i["components"]) or "none",
-                "rules": hits, "rule": ", ".join(hits),
+                "rules": hits, "rule": ", ".join(hits), "reason": rule_labels(hits, esc_cfg),
                 "age_days": age_days(i, as_of), "idle_days": idle_days(i, as_of),
                 "released_versions": released_hit, "assigned": bool(i["assignee_id"]),
             })

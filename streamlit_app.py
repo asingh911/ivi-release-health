@@ -33,7 +33,10 @@ from ivi_tracker.config import load_config  # noqa: E402
 
 load_dotenv(ROOT / ".env")
 APP_NAME = "AGL Release Health"
-st.set_page_config(page_title=APP_NAME, page_icon="🚗", layout="wide")
+INTRO = ("Weekly release health for Automotive Grade Linux, an open-source in-vehicle infotainment platform, "
+         "from its public Jira.")
+st.set_page_config(page_title=APP_NAME, page_icon=":material/directions_car:", layout="wide",
+                   initial_sidebar_state="collapsed")
 
 SERIES_BLUE = "#2a78d6"   # categorical slot 1 (validated reference palette)
 # Reserved status colors (reference palette): never reused for series, always paired with a text label.
@@ -51,7 +54,15 @@ STYLES = """
        font-size: .8em; font-weight: 600; vertical-align: .12em; background: var(--rag-bg); white-space: nowrap; }
 .rag::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--rag); }
 .stMarkdown table, .verdict { font-variant-numeric: tabular-nums; }
-::selection { background: rgba(42,120,214,.35); }
+::selection { background: rgba(37,106,191,.3); }
+h1 { font-size: 1.5rem !important; }
+.verdict h2 { font-size: 1.75rem; }
+.stMarkdown p, .stMarkdown li, [data-testid="stCaptionContainer"] p { max-width: 75ch; }
+.stMarkdown table p { max-width: none; }
+a[href*="/browse/"] { white-space: nowrap; }
+.chase { margin: .6rem 0 0; padding: 0 0 0 1.1rem; }
+.chase li { margin: .15rem 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 </style>
 """
 RULE_GRAY = "#9a9893"
@@ -99,6 +110,7 @@ def require_password() -> None:
         st.session_state.bad_link = True
 
     st.title(APP_NAME)
+    st.markdown(INTRO + " Open it with the link or password you were sent.")
     if st.session_state.pop("bad_link", False):
         st.error("That link isn't valid anymore. Ask the person who shared it for a new one.")
     if not expected:
@@ -174,13 +186,14 @@ def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
     cfg["agenda_size"] = sb.slider("Bug-review agenda size", 5, 20, defaults["agenda_size"], key="s_agenda")
     cfg["stale_days"] = sb.number_input("Stale after (idle days)", 7, 365, defaults["stale_days"], key="s_stale")
 
-    sb.subheader("Release readiness (RAG)")
-    rag = cfg["rag"]
-    rag["amber_done_pct"] = sb.slider("Amber if done % below", 50, 100, rag["amber_done_pct"], key="s_pct")
-    rag["amber_days_to_release"] = sb.number_input("…within this many days of release", 1, 90,
-                                                   rag["amber_days_to_release"], key="s_days")
-    rag["rate_undated"] = sb.toggle("Rate versions with no release date", rag["rate_undated"], key="s_undated",
-                                    help="On: blockers → Red, criticals/slips → Amber. Off: shown as 'No date'.")
+    with sb.expander("Release readiness (RAG)"):
+        rag = cfg["rag"]
+        rag["amber_done_pct"] = st.slider("Amber if done % is below", 50, 100, rag["amber_done_pct"], key="s_pct")
+        rag["amber_days_to_release"] = st.number_input("…within this many days of release", 1, 90,
+                                                       rag["amber_days_to_release"], key="s_days")
+        rag["rate_undated"] = st.toggle("Rate versions with no release date", rag["rate_undated"], key="s_undated",
+                                        help="On: an open blocker makes it Red; a critical or slip makes it "
+                                             "Amber. Off: shown as 'No date'.")
 
     with sb.expander("Target release dates"):
         st.caption("AGL doesn't set release dates in Jira. Add your own targets to turn on the date-based rules.")
@@ -193,16 +206,18 @@ def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
         cfg["release_plan"] = {row["Version"]: row["Target date"].date().isoformat()
                                for _, row in edited.iterrows() if pd.notna(row["Target date"])}
 
-    sb.subheader("Escalation rules")
-    esc = cfg["escalation"]
-    for rid in ("E1", "E2"):
-        rule = esc[rid]
-        c1, c2 = sb.columns(2)
-        rule["min_age_days"] = c1.number_input(f"{rid}: {rule['priority']} open >", 0, 365,
-                                               rule["min_age_days"], key=f"s_{rid}_age")
-        rule["min_idle_days"] = c2.number_input("and idle >", 0, 365, rule["min_idle_days"], key=f"s_{rid}_idle")
-    esc["E3"]["enabled"] = sb.toggle("E3: open issue in a released version", True, key="s_E3")
-    esc["E4"]["enabled"] = sb.toggle("E4: Blocker/Critical with no assignee", True, key="s_E4")
+    with sb.expander("Escalation rules"):
+        esc = cfg["escalation"]
+        for rid in ("E1", "E2"):
+            rule = esc[rid]
+            st.markdown(f"**{rid}:** {rule['priority']} stalled")
+            c1, c2 = st.columns(2)
+            rule["min_age_days"] = c1.number_input("Open more than (days)", 0, 365, rule["min_age_days"],
+                                                   key=f"s_{rid}_age")
+            rule["min_idle_days"] = c2.number_input("Idle more than (days)", 0, 365, rule["min_idle_days"],
+                                                    key=f"s_{rid}_idle")
+        esc["E3"]["enabled"] = st.toggle("E3: open issue in a released version", True, key="s_E3")
+        esc["E4"]["enabled"] = st.toggle("E4: Blocker/Critical with no owner", True, key="s_E4")
     return cfg, window
 
 
@@ -230,25 +245,32 @@ def show_verdict(a: dict, window: int) -> None:
         state = "is at risk" if worst["rag"] == "Red" else "needs attention"
         parts.append(f"<h2>{rag_pill(worst['rag'])} {html.escape(worst['name'])} {state}</h2>")
         for c in v["culprits"][:2]:
-            parts.append(f'<p>Blocked by <a href="{browse(c["key"])}" target="_blank">{c["key"]}</a> '
-                         f'{html.escape(c["summary"])} · {c["priority"]}, idle {c["idle_days"]} days</p>')
+            parts.append(f'<p>Open {c["priority"]} on this release: {jira_link(c["key"])} '
+                         f'{html.escape(c["summary"])} · idle {c["idle_days"]} days</p>')
         if worst.get("rag_basis", "full") != "full":
             parts.append('<p class="quiet">Rated on blockers, criticals, and slips: Jira has no release date '
                          'for this version.</p>')
     if v["others"]:
-        others = " · ".join(f"{html.escape(r['name'])} {rag_pill(r['rag'])}" for r in v["others"])
+        others = " · ".join(f"{html.escape(r['name'])} {rag_pill(r['rag'])} {r['open']} open"
+                            for r in v["others"])
         parts.append(f'<p class="quiet">Other active releases: {others}</p>')
+    if v["chase"]:
+        items = "".join(f'<li>{jira_link(e["key"])} {html.escape(e["summary"])} · {html.escape(e["reason"])}'
+                        f'{", on an at-risk release" if e["at_risk"] else ""}, idle {e["idle_days"]} days</li>'
+                        for e in v["chase"])
+        parts.append(f'<p><strong>Chase these first</strong> ({v["escalations"]} of {v["open_blocker_critical"]} '
+                     f'open Blocker/Critical issues trip an escalation rule):</p><ul class="chase">{items}</ul>')
     st.markdown(f'<div class="verdict">{"".join(parts)}</div>', unsafe_allow_html=True)
 
-    attention = [f"<strong>{v['escalations']}</strong> issues need escalation"]
-    if v["unowned_blocker_critical"]:
-        attention.append(f"<strong>{v['unowned_blocker_critical']}</strong> open Blocker/Critical issues have "
-                         "no owner")
-    attention.append(f"<strong>{v['open_blocker_critical']}</strong> open Blocker/Critical overall")
     f = a["flow"]
-    st.markdown(f'<p>{" · ".join(attention)}</p><p class="glance">{a["open_total"]} open issues · '
-                f'{f["new"]} new and {f["resolved"]} resolved in the last {window} days '
+    st.markdown(f'<p class="glance">{a["open_total"]} open issues, {a["open_total"] - a["open_unscoped"]} of them '
+                f'assigned to a release · {f["new"]} new and {f["resolved"]} resolved in the last {window} days '
                 f'(net {f["net"]:+d})</p>', unsafe_allow_html=True)
+
+
+def jira_link(key: str) -> str:
+    return (f'<a href="{browse(key)}" target="_blank" rel="noopener">{key}'
+            f'<span class="sr-only"> (opens Jira in a new tab)</span></a>')
 
 
 def link_column(label: str = "Key"):
@@ -275,11 +297,14 @@ def trend_chart(df: pd.DataFrame, field: str, title: str) -> alt.LayerChart:
     return (line + dots + rule).properties(title=title, height=260)
 
 
-def show_status(a: dict, drafts: llm.Drafts) -> None:
-    s = drafts.status_sections
-    st.subheader("Summary")
-    st.markdown(render.linkify(s["Summary"]))
+def show_narrative(heading: str, text: str) -> None:
+    if text:
+        st.subheader(heading)
+        st.markdown(render.linkify(text))
 
+
+def show_status(a: dict, drafts: llm.Drafts, stale_days: int) -> None:
+    s = drafts.status_sections
     st.subheader("Release readiness")
     rows = a["readiness"]["rows"]
     st.dataframe(pd.DataFrame([{
@@ -299,16 +324,15 @@ def show_status(a: dict, drafts: llm.Drafts) -> None:
     st.subheader("Blockers & criticals")
     if a["blockers"]:
         st.dataframe(pd.DataFrame([{
-            "Key": browse(b["key"]), "Summary": b["summary"], "Component": b["component"],
+            "Key": browse(b["key"]), "Summary": b["summary"], "Release": ", ".join(b["releases"]) or "none",
             "Priority": b["priority"], "Age (days)": b["age_days"], "Idle (days)": b["idle_days"],
-            "Assigned": "yes" if b["assigned"] else "no",
+            "Owner": "yes" if b["assigned"] else "no",
         } for b in a["blockers"]]), hide_index=True, use_container_width=True,
-            column_config={"Key": link_column()})
+            height=38 + 35 * len(a["blockers"]), column_config={"Key": link_column()})
     else:
         st.write("No open Blocker or Critical issues.")
 
-    st.subheader("Risks & slips")
-    st.markdown(render.linkify(s["Risks & slips"]))
+    show_narrative("Risks & slips", s["Risks & slips"])
     if a["past_due"]:
         st.dataframe(pd.DataFrame([{"Key": browse(p["key"]), "Version": p["version"], "Priority": p["priority"],
                                     "Why": f"open in a {p['reason']} version"} for p in a["past_due"]]),
@@ -316,14 +340,12 @@ def show_status(a: dict, drafts: llm.Drafts) -> None:
 
     st.subheader("Backlog hygiene")
     for check, keys in a["hygiene"].items():
-        label = render.HYGIENE_LABEL.get(check, check)
+        label = render.HYGIENE_LABEL.get(check, check).replace("30", str(stale_days))
         with st.expander(f"{label}: **{len(keys)}**"):
             st.markdown(", ".join(render.link(k) for k in keys) or "None")
 
-    st.subheader("Asks / decisions needed")
-    st.markdown(render.linkify(s["Asks / decisions needed"]))
-    st.subheader("Next steps")
-    st.markdown(render.linkify(s["Next steps"]))
+    show_narrative("Asks / decisions needed", s["Asks / decisions needed"])
+    show_narrative("Next steps", s["Next steps"])
 
 
 def artifact_body(markdown: str) -> str:
@@ -377,48 +399,57 @@ def main() -> None:
         drafts, source = render.drafts_from_dict(weekly[1]), "weekly"
     elif facts_key in session_drafts:
         drafts, source = session_drafts[facts_key], "session"
+    elif weekly and (reused := llm.reuse_drafts(render.drafts_from_dict(weekly[1]), facts)).complete:
+        drafts, source = reused, "weekly"
+    elif weekly and (any(reused.status_sections.values()) or reused.agenda_questions or reused.escalation_notes):
+        drafts, source = reused, "partial"
     else:
         drafts, source = llm.placeholder_drafts(facts), None
 
     st.markdown(STYLES, unsafe_allow_html=True)
     st.title(APP_NAME)
-    st.markdown("Weekly release health for Automotive Grade Linux, an open-source in-vehicle infotainment "
-                "platform, computed from its public Jira backlog.")
-    st.caption(f"Project SPEC · {len(issues):,} issues · data as of {data['as_of']} · window {window} days")
-
+    st.markdown(INTRO)
     show_verdict(a, window)
+    st.caption("Releases use fish codenames (Unagi 21, Vimba 22); Red, Amber, and Green rate how ready each one "
+               "is. Every number is computed from the Jira data in code; AI only writes the narrative, and each "
+               "number it writes is checked against those computations.")
+    st.caption(f"Project SPEC · {len(issues):,} issues · data as of {data['as_of']} · window {window} days · "
+               "thresholds are adjustable in the sidebar")
 
     cap = int(defaults.get("app", {}).get("max_ai_drafts_per_day", 20))
     if source == "weekly":
-        st.caption(":material/verified: Narrative drafted by AI in the weekly run. Every number in it is checked "
-                   "against the computed facts.")
+        st.caption(":material/verified: Narrative drafted by AI in the weekly run; every number in it matches "
+                   "these settings.")
     elif source == "session":
-        st.caption(":material/verified: Narrative drafted by AI for your settings. Every number in it is checked "
-                   "against the computed facts.")
+        st.caption(":material/verified: Narrative drafted by AI for these settings; every number in it is checked.")
     else:
         left, has_key = ai_remaining(cap), bool(secret("OPENAI_API_KEY"))
         c1, c2 = st.columns([3, 1], vertical_alignment="center")
-        c1.warning("Your settings differ from the weekly run. The tables are up to date; the written narrative "
-                   "isn't yet.", icon=":material/edit_note:")
-        why = None if has_key and left else ("AI drafting isn't configured on this app." if not has_key
+        c1.caption(":material/edit_note: " + (
+            "Parts of the weekly narrative no longer match these settings, so they're hidden. Every table is "
+            "current." if source == "partial" else
+            "No narrative is drafted for these settings. Every table is current."))
+        why = None if has_key and left else ("AI drafting isn't set up on this app." if not has_key
                                             else "Today's AI drafts are used up. Try again tomorrow.")
         if c2.button(f"Draft with AI ({left} left today)", disabled=why is not None, help=why,
-                     use_container_width=True, type="primary"):
+                     use_container_width=True):
             if spend_ai_draft(cap):
                 os.environ.setdefault("OPENAI_API_KEY", secret("OPENAI_API_KEY") or "")
                 with st.spinner("Drafting… about 10 seconds"):
                     try:
                         session_drafts[facts_key] = llm.draft_all(facts, llm.openai_complete(cfg))
                     except llm.LLMGuardError as exc:
-                        st.error(f"The AI draft failed the number check twice, so it wasn't used. ({exc})")
-                    except Exception as exc:  # network / API errors: keep the tables usable
-                        st.error(f"AI drafting failed: {exc.__class__.__name__}. Try again later.")
+                        st.error("The AI draft cited numbers that aren't in the data, twice, so it wasn't "
+                                 "used. The tables are unaffected; try again or keep the tables as they are.")
+                    except Exception:  # network / API errors: keep the tables usable
+                        st.error("Couldn't reach the AI service. The tables are unaffected; try again in a "
+                                 "minute.")
                     else:
                         st.rerun()
 
     tabs = st.tabs(["Weekly status", "Bug review", "Escalations", "Trends", "Download"])
     with tabs[0]:
-        show_status(a, drafts)
+        show_status(a, drafts, cfg["stale_days"])
     artifacts = render.render_strings(a, drafts, cfg)
     with tabs[1]:
         show_artifact(artifacts["bug_review"])

@@ -1,8 +1,8 @@
 [theme]
 # Light, chosen for the use scene: read at a desk in daytime, often opened from a shared link.
 base = "light"
-# Blue accent (reference palette slot 1): Streamlit's default red would collide with the Red RAG status.
-primaryColor = "#2a78d6"
+# Blue accent (reference palette blue 500, 5.4:1 on white): Streamlit's default red would collide with the Red RAG status.
+primaryColor = "#256abf"
 
 [client]
 toolbarMode = "viewer"

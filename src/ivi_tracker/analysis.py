@@ -7,21 +7,46 @@ from datetime import date
 from . import escalation, metrics
 
 
+AT_RISK = ("Red", "Amber")
+
+
 def analyze(issues: list[dict], versions: list[dict], as_of: date, cfg: dict, window_days: int) -> dict:
     open_issues = [i for i in issues if metrics.is_open(i)]
+    readiness = metrics.release_readiness(versions, issues, as_of, cfg)
+    at_risk = {r["name"] for r in readiness["rows"] if r["rag"] in AT_RISK}
+    names = {v["id"]: v["name"] for v in versions}
+    releases_of = {i["key"]: sorted(names[v] for v in i["fix_versions"] if v in names) for i in open_issues}
+
+    def with_release(row: dict) -> dict:
+        releases = releases_of.get(row["key"], [])
+        return {**row, "releases": releases, "at_risk": bool(at_risk & set(releases))}
+
+    blockers = [with_release(b) for b in metrics.blocker_view(issues, as_of)]
+    escalations = [with_release(e) for e in escalation.evaluate(issues, versions, as_of, cfg["escalation"])]
     return {
         "as_of": as_of.isoformat(),
         "window_days": window_days,
         "issues_total": len(issues),
         "open_total": len(open_issues),
+        "open_unscoped": sum(1 for i in open_issues if not i["fix_versions"]),
         "flow": metrics.flow(issues, as_of, window_days),
         "hygiene": metrics.hygiene(issues, as_of, cfg["stale_days"]),
-        "blockers": metrics.blocker_view(issues, as_of),
-        "readiness": metrics.release_readiness(versions, issues, as_of, cfg),
+        "blockers": blockers,
+        # Bug-review order: whatever threatens an at-risk release first, then priority, then idle time.
+        "agenda": sorted(blockers, key=lambda b: (not b["at_risk"], -metrics.PRIORITY_RANK[b["priority"]],
+                                                  -b["idle_days"], b["key"])),
+        "readiness": readiness,
         "past_due": metrics.past_due(versions, issues, as_of, cfg.get("release_plan")),
-        "escalations": escalation.evaluate(issues, versions, as_of, cfg["escalation"]),
+        "escalations": escalations,
         "escalation_rules": escalation.rule_descriptions(cfg["escalation"]),
     }
+
+
+def chase_first(a: dict, n: int = 3) -> list[dict]:
+    """The escalations worth chasing first: at-risk release, then no owner, then priority, then idle time."""
+    return sorted(a["escalations"], key=lambda e: (not e["at_risk"], "E4" not in e["rules"],
+                                                   -metrics.PRIORITY_RANK.get(e["priority"], 0),
+                                                   -e["idle_days"], e["key"]))[:n]
 
 
 def _keys(keys: list[str], n: int = 5) -> str:
@@ -80,6 +105,7 @@ def verdict(a: dict) -> dict:
         "culprits": culprits,
         "others": [r for r in active if r is not worst],
         "escalations": len(a["escalations"]),
+        "chase": chase_first(a),
         "open_blocker_critical": len(a["blockers"]),
         "unowned_blocker_critical": len(unowned),
     }

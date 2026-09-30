@@ -46,7 +46,7 @@ def test_dashboard_renders_after_login(monkeypatch):
     assert at.title[0].value == "AGL Release Health"
     assert [t.label for t in at.tabs] == ["Weekly status", "Bug review", "Escalations", "Trends", "Download"]
     page = " ".join(m.value for m in at.markdown)
-    assert "is at risk" in page and "need escalation" in page     # verdict band leads the page
+    assert "is at risk" in page and "Chase these first" in page   # verdict band leads the page
 
 
 def test_default_settings_reuse_weekly_ai_draft(monkeypatch):
@@ -59,7 +59,12 @@ def test_changed_settings_recompute_and_offer_ai(monkeypatch):
     at.select_slider(key="s_window").set_value(7).run()
     assert not at.exception
     assert any("in the last 7 days" in m.value for m in at.markdown)
-    assert any("differ from the weekly run" in w.value for w in at.warning)
+    # a settings change never shows command-line advice or an alarm; it says what is current
+    captions = " ".join(c.value for c in at.caption)
+    assert "Every table is current" in captions or "match these settings" in captions
+    assert not at.warning
+    everything = " ".join(m.value for m in at.markdown) + captions
+    assert "--no-llm" not in everything
 
 
 SHARE = "s3cret-share-key-0123456789"
