@@ -1,0 +1,344 @@
+"""Web view of the IVI release-health report.
+
+Reads the data the weekly job commits (data/app/data.json.gz), recomputes every metric live from the
+settings in the sidebar, and reuses the weekly AI narrative when the settings match that run. Changed
+settings can be re-drafted with AI, up to a daily cap. The whole app sits behind APP_PASSWORD.
+
+Run locally:  streamlit run streamlit_app.py
+"""
+
+from __future__ import annotations
+
+import copy
+import hmac
+import json
+import os
+import sys
+import threading
+from datetime import date
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / "src"))
+
+import altair as alt  # noqa: E402
+import pandas as pd  # noqa: E402
+import streamlit as st  # noqa: E402
+from dotenv import load_dotenv  # noqa: E402
+
+from ivi_tracker import analysis, llm, metrics, render, store  # noqa: E402
+from ivi_tracker.config import load_config  # noqa: E402
+
+load_dotenv(ROOT / ".env")
+st.set_page_config(page_title="IVI Release Health", page_icon="🚗", layout="wide")
+
+SERIES_BLUE = "#2a78d6"   # categorical slot 1 (validated reference palette)
+RULE_GRAY = "#9a9893"
+WINDOWS = [7, 14, 30, 60, 90]
+
+
+def secret(name: str) -> str | None:
+    """Streamlit secrets on the hosted app, environment / .env locally."""
+    try:
+        value = st.secrets.get(name)
+    except Exception:          # no secrets file at all
+        value = None
+    return value or os.getenv(name)
+
+
+# ---------- access ----------
+
+def require_password() -> None:
+    expected = secret("APP_PASSWORD")
+    if not expected:
+        st.error("This app is locked. Set `APP_PASSWORD` in the app's secrets (or `.env` locally).")
+        st.stop()
+    if st.session_state.get("authed"):
+        return
+    st.title("IVI Release Health")
+    with st.form("login"):
+        attempt = st.text_input("Password", type="password")
+        submitted = st.form_submit_button("Enter")
+    if submitted and hmac.compare_digest(attempt.encode(), expected.encode()):
+        st.session_state.authed = True
+        st.rerun()
+    if submitted:
+        st.error("Wrong password.")
+    st.stop()
+
+
+# ---------- data ----------
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_data() -> dict:
+    return store.load_app_data()
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_weekly_run(as_of: str) -> tuple[dict, dict] | None:
+    """Facts and AI drafts from the weekly run that produced this data, if present."""
+    run_dir = ROOT / "reports" / as_of
+    try:
+        return (json.loads((run_dir / "facts.json").read_text()),
+                json.loads((run_dir / "drafts.json").read_text()))
+    except FileNotFoundError:
+        return None
+
+
+@st.cache_resource
+def ai_budget() -> dict:
+    """Process-wide daily counter of AI drafts (shared by every viewer)."""
+    return {"lock": threading.Lock(), "day": None, "used": 0}
+
+
+def ai_remaining(cap: int) -> int:
+    b = ai_budget()
+    with b["lock"]:
+        if b["day"] != date.today():
+            b["day"], b["used"] = date.today(), 0
+        return max(cap - b["used"], 0)
+
+
+def spend_ai_draft(cap: int) -> bool:
+    b = ai_budget()
+    with b["lock"]:
+        if b["day"] != date.today():
+            b["day"], b["used"] = date.today(), 0
+        if b["used"] >= cap:
+            return False
+        b["used"] += 1
+        return True
+
+
+# ---------- settings ----------
+
+def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
+    cfg = copy.deepcopy(defaults)
+    sb = st.sidebar
+    sb.header("Settings")
+    if sb.button("Reset to defaults", use_container_width=True):
+        for k in [k for k in st.session_state if k.startswith("s_")]:
+            del st.session_state[k]
+        st.rerun()
+
+    window = sb.select_slider("Window (days)", WINDOWS, value=defaults["window_days"], key="s_window",
+                              help="Period for new / resolved counts. AGL is quiet, so 30 is the default.")
+    cfg["agenda_size"] = sb.slider("Bug-review agenda size", 5, 20, defaults["agenda_size"], key="s_agenda")
+    cfg["stale_days"] = sb.number_input("Stale after (idle days)", 7, 365, defaults["stale_days"], key="s_stale")
+
+    sb.subheader("Release readiness (RAG)")
+    rag = cfg["rag"]
+    rag["amber_done_pct"] = sb.slider("Amber if done % below", 50, 100, rag["amber_done_pct"], key="s_pct")
+    rag["amber_days_to_release"] = sb.number_input("…within this many days of release", 1, 90,
+                                                   rag["amber_days_to_release"], key="s_days")
+    rag["rate_undated"] = sb.toggle("Rate versions with no release date", rag["rate_undated"], key="s_undated",
+                                    help="On: blockers → Red, criticals/slips → Amber. Off: shown as 'No date'.")
+
+    with sb.expander("Target release dates"):
+        st.caption("AGL doesn't set release dates in Jira. Add your own targets to turn on the date-based rules.")
+        unreleased = sorted(v["name"] for v in versions if not v["released"] and not v["archived"])
+        plan_df = pd.DataFrame({"Version": unreleased, "Target date": [None] * len(unreleased)})
+        plan_df["Target date"] = pd.to_datetime(plan_df["Target date"])
+        edited = st.data_editor(
+            plan_df, key="s_plan", hide_index=True, use_container_width=True, disabled=["Version"],
+            column_config={"Target date": st.column_config.DateColumn(format="YYYY-MM-DD")})
+        cfg["release_plan"] = {row["Version"]: row["Target date"].date().isoformat()
+                               for _, row in edited.iterrows() if pd.notna(row["Target date"])}
+
+    sb.subheader("Escalation rules")
+    esc = cfg["escalation"]
+    for rid in ("E1", "E2"):
+        rule = esc[rid]
+        c1, c2 = sb.columns(2)
+        rule["min_age_days"] = c1.number_input(f"{rid}: {rule['priority']} open >", 0, 365,
+                                               rule["min_age_days"], key=f"s_{rid}_age")
+        rule["min_idle_days"] = c2.number_input("and idle >", 0, 365, rule["min_idle_days"], key=f"s_{rid}_idle")
+    esc["E3"]["enabled"] = sb.toggle("E3: open issue in a released version", True, key="s_E3")
+    esc["E4"]["enabled"] = sb.toggle("E4: Blocker/Critical with no assignee", True, key="s_E4")
+    return cfg, window
+
+
+# ---------- views ----------
+
+def link_column(label: str = "Key"):
+    return st.column_config.LinkColumn(label, display_text=r"https?://.*/browse/(.*)")
+
+
+def browse(key: str) -> str:
+    return render.link(key).split("(", 1)[1].rstrip(")")
+
+
+def trend_chart(df: pd.DataFrame, field: str, title: str) -> alt.LayerChart:
+    """Single-series line with a crosshair + tooltip on hover."""
+    hover = alt.selection_point(fields=["week_ending"], nearest=True, on="pointerover", empty=False)
+    base = alt.Chart(df).encode(x=alt.X("week_ending:T", title=None, axis=alt.Axis(format="%b %d", grid=False)))
+    y = alt.Y(f"{field}:Q", title=None, scale=alt.Scale(zero=True), axis=alt.Axis(tickCount=5))
+    line = base.mark_line(color=SERIES_BLUE, strokeWidth=2).encode(y=y)
+    dots = base.mark_point(color=SERIES_BLUE, filled=True, size=70).encode(
+        y=y, opacity=alt.condition(hover, alt.value(1), alt.value(0)))
+    rule = base.mark_rule(color=RULE_GRAY).encode(
+        opacity=alt.condition(hover, alt.value(0.8), alt.value(0)),
+        tooltip=[alt.Tooltip("week_ending:T", title="Week ending", format="%b %d, %Y"),
+                 alt.Tooltip(f"{field}:Q", title=title)],
+    ).add_params(hover)
+    return (line + dots + rule).properties(title=title, height=260)
+
+
+def show_status(a: dict, drafts: llm.Drafts) -> None:
+    s = drafts.status_sections
+    st.subheader("Summary")
+    st.markdown(s["Summary"])
+
+    st.subheader("Release readiness")
+    rows = a["readiness"]["rows"]
+    st.dataframe(pd.DataFrame([{
+        "Version": r["name"], "RAG": render.RAG_ICON[r["rag"]],
+        "Release date": r["release_date"] or "no date", "Scope": r["scope"],
+        "Done %": r["done_pct"], "Open": r["open"],
+        "Open blockers": r["open_blockers"], "Open criticals": r["open_criticals"],
+    } for r in rows]), hide_index=True, use_container_width=True,
+        column_config={"Done %": st.column_config.ProgressColumn(format="%.1f%%", min_value=0, max_value=100)})
+    if any(r.get("rag_basis", "full") not in ("full",) and r["rag"] != "Released" for r in rows):
+        st.caption("Undated versions are rated on blockers, criticals, and slips only.")
+    done = a["readiness"]["complete_not_released"]
+    if done:
+        with st.expander(f"{len(done)} versions are fully done but not marked released in Jira"):
+            st.write(", ".join(done))
+
+    st.subheader("Blockers & criticals")
+    if a["blockers"]:
+        st.dataframe(pd.DataFrame([{
+            "Key": browse(b["key"]), "Summary": b["summary"], "Component": b["component"],
+            "Priority": b["priority"], "Age (days)": b["age_days"], "Idle (days)": b["idle_days"],
+            "Assigned": "yes" if b["assigned"] else "no",
+        } for b in a["blockers"]]), hide_index=True, use_container_width=True,
+            column_config={"Key": link_column()})
+    else:
+        st.write("No open Blocker or Critical issues.")
+
+    st.subheader("Risks & slips")
+    st.markdown(s["Risks & slips"])
+    if a["past_due"]:
+        st.dataframe(pd.DataFrame([{"Key": browse(p["key"]), "Version": p["version"], "Priority": p["priority"],
+                                    "Why": f"open in a {p['reason']} version"} for p in a["past_due"]]),
+                     hide_index=True, use_container_width=True, column_config={"Key": link_column()})
+
+    st.subheader("Backlog hygiene")
+    for check, keys in a["hygiene"].items():
+        label = render.HYGIENE_LABEL.get(check, check)
+        with st.expander(f"{label}: **{len(keys)}**"):
+            st.markdown(", ".join(render.link(k) for k in keys) or "None")
+
+    st.subheader("Asks / decisions needed")
+    st.markdown(s["Asks / decisions needed"])
+    st.subheader("Next steps")
+    st.markdown(s["Next steps"])
+
+
+def artifact_body(markdown: str) -> str:
+    """Drop the artifact's H1 and 'Draft generated by' line; the page already has a header."""
+    lines = markdown.splitlines()
+    return "\n".join(l for l in lines if not l.startswith("# ") and not l.startswith("*Draft generated"))
+
+
+def show_artifact(markdown: str) -> None:
+    """Render a markdown artifact as-is: its tables wrap long sentences, unlike data grids."""
+    st.markdown(artifact_body(markdown))
+
+
+def show_trends(issues: list[dict], as_of: date) -> None:
+    df = pd.DataFrame(metrics.open_trend(issues, as_of, weeks=26))
+    c1, c2 = st.columns(2)
+    c1.altair_chart(trend_chart(df, "open", "Open issues"), use_container_width=True)
+    c2.altair_chart(trend_chart(df, "open_blocker_critical", "Open Blocker/Critical issues"),
+                    use_container_width=True)
+    st.caption("Last 26 weeks, rebuilt from created and resolved dates using each issue's current priority "
+               "(reopens and priority changes aren't captured).")
+    with st.expander("Table view"):
+        st.dataframe(df.rename(columns={"week_ending": "Week ending", "open": "Open issues",
+                                        "open_blocker_critical": "Open Blocker/Critical"}),
+                     hide_index=True, use_container_width=True)
+
+
+# ---------- page ----------
+
+def main() -> None:
+    require_password()
+    defaults = load_config()
+    data = load_data()
+    issues, versions = data["issues"], data["versions"]
+    as_of = date.fromisoformat(data["as_of"])
+    cfg, window = sidebar_settings(defaults, versions)
+
+    a = analysis.analyze(issues, versions, as_of, cfg, window)
+    facts = llm.build_facts(a, cfg)
+    facts_key = json.dumps(facts, sort_keys=True)
+
+    # Narrative: weekly run's AI draft if the facts match exactly, else one drafted this session, else none.
+    weekly = load_weekly_run(data["as_of"])
+    session_drafts = st.session_state.setdefault("drafts", {})
+    if weekly and weekly[0] == facts:
+        drafts, source = render.drafts_from_dict(weekly[1]), "weekly"
+    elif facts_key in session_drafts:
+        drafts, source = session_drafts[facts_key], "session"
+    else:
+        drafts, source = llm.placeholder_drafts(facts), None
+
+    st.title("AGL Release Health")
+    st.caption(f"Automotive Grade Linux public Jira (project SPEC) · data as of {data['as_of']} · "
+               f"{len(issues):,} issues · window {window} days")
+
+    f = a["flow"]
+    k = st.columns(6)
+    k[0].metric("Open issues", a["open_total"])
+    k[1].metric(f"New ({window}d)", f["new"])
+    k[2].metric(f"Resolved ({window}d)", f["resolved"])
+    k[3].metric("Net change", f"{f['net']:+d}")
+    k[4].metric("Open blockers & criticals", len(a["blockers"]))
+    k[5].metric("Escalations", len(a["escalations"]))
+
+    cap = int(defaults.get("app", {}).get("max_ai_drafts_per_day", 20))
+    if source == "weekly":
+        st.info("Narrative: AI draft from the weekly run (settings match it). Every number is checked against "
+                "the computed facts.", icon="✅")
+    elif source == "session":
+        st.info("Narrative: AI draft for your current settings, checked by the number guard.", icon="✅")
+    else:
+        left = ai_remaining(cap)
+        c1, c2 = st.columns([3, 1])
+        c1.warning("Settings differ from the weekly run, so the narrative isn't drafted yet. The tables below "
+                   "are already up to date.", icon="✏️")
+        if c2.button(f"Draft with AI ({left} left today)", disabled=left == 0 or not secret("OPENAI_API_KEY"),
+                     use_container_width=True, type="primary"):
+            if spend_ai_draft(cap):
+                os.environ.setdefault("OPENAI_API_KEY", secret("OPENAI_API_KEY") or "")
+                with st.spinner("Drafting… about 10 seconds"):
+                    try:
+                        session_drafts[facts_key] = llm.draft_all(facts, llm.openai_complete(cfg))
+                    except llm.LLMGuardError as exc:
+                        st.error(f"The AI draft failed the number check twice, so it wasn't used. ({exc})")
+                    except Exception as exc:  # network / API errors: keep the tables usable
+                        st.error(f"AI drafting failed: {exc.__class__.__name__}. Try again later.")
+                    else:
+                        st.rerun()
+
+    tabs = st.tabs(["Weekly status", "Bug review", "Escalations", "Trends", "Download"])
+    with tabs[0]:
+        show_status(a, drafts)
+    artifacts = render.render_strings(a, drafts, cfg)
+    with tabs[1]:
+        show_artifact(artifacts["bug_review"])
+    with tabs[2]:
+        show_artifact(artifacts["escalations"])
+    with tabs[3]:
+        show_trends(issues, as_of)
+    with tabs[4]:
+        st.caption("Confluence-ready markdown for the current settings.")
+        for name, text in artifacts.items():
+            st.download_button(f"{name}.md", text, file_name=f"{name}_{data['as_of']}.md",
+                               mime="text/markdown", use_container_width=True)
+
+    st.caption("Uses public AGL Jira data. Not affiliated with Automotive Grade Linux or the Linux Foundation.")
+
+
+main()

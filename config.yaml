@@ -1,0 +1,29 @@
+project_key: SPEC
+window_days: 30          # AGL is low-activity; use 7 on a busy program
+agenda_size: 10
+reviewer: Aayush Singh   # header line on every artifact
+stale_days: 30
+rag:
+  amber_done_pct: 80
+  amber_days_to_release: 14
+  # AGL stopped setting release dates in Jira after 2025-04, so no unreleased version has one.
+  # true: undated versions still get RAG from the date-independent rules (blockers -> Red,
+  # criticals or slips -> Amber). false: undated versions show "No date" (date-based rules only).
+  rate_undated: true
+# TPM-maintained target dates, used only when Jira has no releaseDate. Format: "Version name": YYYY-MM-DD
+release_plan: {}
+readiness:
+  # Unreleased versions whose scope is 100% done are listed as a hygiene finding
+  # ("mark released in Jira") instead of cluttering the readiness table.
+  include_complete_unreleased: false
+escalation:
+  E1: {priority: Blocker,  min_age_days: 7,  min_idle_days: 3}
+  E2: {priority: Critical, min_age_days: 14, min_idle_days: 7}
+  E3: {enabled: true}
+  E4: {priorities: [Blocker, Critical]}
+llm:
+  model: gpt-5.4-mini   # small current model; check OpenAI's model list/pricing
+  temperature: 0.2
+  max_summary_chars: 120
+app:
+  max_ai_drafts_per_day: 20   # web app: AI re-drafts for changed settings, shared across all viewers

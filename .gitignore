@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+node_modules/
+build/
+dist/
+.idea/
+.vscode/
+
+# Project-specific
+data/cache.db
+data/cache.db-*
+*.egg-info/
+.pytest_cache/

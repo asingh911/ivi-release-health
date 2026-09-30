@@ -1,0 +1,739 @@
+{
+ "issues": [
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22625",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22625",
+   "key": "SPEC-5719",
+   "fields": {
+    "summary": "bluetoothd crashes with NULL dereference on MediaItem1.Play() when AVRCP browsing is inactive",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-29T08:18:41.316-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-29T08:40:58.719-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22624",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22624",
+   "key": "SPEC-5718",
+   "fields": {
+    "summary": "[Repo Request] Create repository for bluez_media_native GSoC26",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10004",
+     "id": "10004",
+     "description": "A task that needs to be done. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Task",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-29T08:03:52.047-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5718"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-29T08:05:38.100-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22591",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22591",
+   "key": "SPEC-5717",
+   "fields": {
+    "summary": "Upstream the initial VeloRT Project into Automotive Grade Linux Gerrit repository. ",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-22T00:19:41.532-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-22T00:19:42.453-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22556",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22556",
+   "key": "SPEC-5715",
+   "fields": {
+    "summary": "Implement Bluetooth media playback support on ICS-Homescreen",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10003",
+     "id": "10003",
+     "description": "A new feature of the product, which has yet to be developed. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "New Feature",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-19T10:42:49.786-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5715"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-25T17:36:14.144-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/3",
+     "description": "This work item is being actively worked on at the moment by the assignee.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/inprogress.png",
+     "name": "In Progress",
+     "id": "3",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/4",
+      "id": 4,
+      "key": "indeterminate",
+      "colorName": "yellow",
+      "name": "In Progress"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22555",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22555",
+   "key": "SPEC-5714",
+   "fields": {
+    "summary": "Track post-wrynose Yocto releases on \"next\" branch",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10004",
+     "id": "10004",
+     "description": "A task that needs to be done. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Task",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [
+     {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/component/10004",
+      "id": "10004",
+      "name": "Build and Tools",
+      "description": "Build, Tools, and Release Management"
+     }
+    ],
+    "created": "2026-09-17T09:01:16.872-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5714"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10002",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/major.svg",
+     "name": "Major",
+     "id": "10002"
+    },
+    "updated": "2026-09-17T09:01:17.909-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22554",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22554",
+   "key": "SPEC-5713",
+   "fields": {
+    "summary": "kuksa-client: rpm transaction test error",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-17T03:21:28.038-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-17T03:21:29.002-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22553",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22553",
+   "key": "SPEC-5712",
+   "fields": {
+    "summary": "Prepare Vibrant Vimba 22.0.0 ",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-15T04:28:15.385-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5712"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-15T04:28:30.694-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22519",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22519",
+   "key": "SPEC-5709",
+   "fields": {
+    "summary": "Upstream VeloFlux streaming data processing engine",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10004",
+     "id": "10004",
+     "description": "A task that needs to be done. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Task",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-10T01:58:13.560-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-10T01:58:56.675-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22517",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22517",
+   "key": "SPEC-5708",
+   "fields": {
+    "summary": "Grant issue create permission to new account ",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10005",
+     "id": "10005",
+     "description": "An improvement or enhancement to an existing feature or task. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Improvement",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-10T01:54:13.611-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-10T01:54:14.581-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22512",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22512",
+   "key": "SPEC-5707",
+   "fields": {
+    "summary": "Update to YP wrynose 6.0.3",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10003",
+     "id": "10003",
+     "description": "A new feature of the product, which has yet to be developed. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "New Feature",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [
+     {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/component/10004",
+      "id": "10004",
+      "name": "Build and Tools",
+      "description": "Build, Tools, and Release Management"
+     }
+    ],
+    "created": "2026-09-09T09:12:54.844-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5707"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10002",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/major.svg",
+     "name": "Major",
+     "id": "10002"
+    },
+    "updated": "2026-09-09T09:13:13.460-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/3",
+     "description": "This work item is being actively worked on at the moment by the assignee.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/inprogress.png",
+     "name": "In Progress",
+     "id": "3",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/4",
+      "id": 4,
+      "key": "indeterminate",
+      "colorName": "yellow",
+      "name": "In Progress"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22511",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22511",
+   "key": "SPEC-5706",
+   "fields": {
+    "summary": "Create document for Slint early support ",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10006",
+     "id": "10006",
+     "description": "The sub-task of the issue (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Sub-task",
+     "subtask": true,
+     "avatarId": 10300,
+     "hierarchyLevel": -1
+    },
+    "components": [],
+    "created": "2026-09-04T07:59:05.143-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5706"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-14T05:21:26.205-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/3",
+     "description": "This work item is being actively worked on at the moment by the assignee.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/inprogress.png",
+     "name": "In Progress",
+     "id": "3",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/4",
+      "id": 4,
+      "key": "indeterminate",
+      "colorName": "yellow",
+      "name": "In Progress"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22510",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22510",
+   "key": "SPEC-5705",
+   "fields": {
+    "summary": "Use variables for branch names in documentation",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-03T07:18:13.528-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-03T07:18:14.020-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22509",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22509",
+   "key": "SPEC-5704",
+   "fields": {
+    "summary": "QT Media Player Bluetooth switcher not working",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [
+     {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/component/10003",
+      "id": "10003",
+      "name": "Bluetooth",
+      "description": "Bluetooth Serices"
+     }
+    ],
+    "created": "2026-09-03T07:12:59.182-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5704"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-03T07:30:53.272-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22508",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22508",
+   "key": "SPEC-5703",
+   "fields": {
+    "summary": "Radio not working on VisionFive2 Vimba M3",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [
+     {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/component/10014",
+      "id": "10014",
+      "name": "Kernel/ OS",
+      "description": "Kernel, OS, and Common Libraries"
+     }
+    ],
+    "created": "2026-09-03T07:11:04.057-0700",
+    "resolutiondate": null,
+    "assignee": {
+     "accountId": "redacted-SPEC-5703"
+    },
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10003",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/minor.svg",
+     "name": "Minor",
+     "id": "10003"
+    },
+    "updated": "2026-09-03T07:30:29.365-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  },
+  {
+   "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+   "id": "22506",
+   "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issue/22506",
+   "key": "SPEC-5701",
+   "fields": {
+    "summary": "Fix typos and spelling in the documentation",
+    "issuetype": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/issuetype/10002",
+     "id": "10002",
+     "description": "A problem which impairs or prevents the functions of the product. (Migrated on 9 Sep 2024 19:10 UTC)",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+     "name": "Bug",
+     "subtask": false,
+     "avatarId": 10300,
+     "hierarchyLevel": 0
+    },
+    "components": [],
+    "created": "2026-09-03T06:31:51.685-0700",
+    "resolutiondate": null,
+    "assignee": null,
+    "fixVersions": [],
+    "priority": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/priority/10000",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/priorities/blocker.svg",
+     "name": "Blocker",
+     "id": "10000"
+    },
+    "updated": "2026-09-03T06:31:52.243-0700",
+    "status": {
+     "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/status/1",
+     "description": "The work item is open and ready for the assignee to start work on it.",
+     "iconUrl": "https://lf-automotivelinux.atlassian.net/images/icons/statuses/open.png",
+     "name": "Open",
+     "id": "1",
+     "statusCategory": {
+      "self": "https://lf-automotivelinux.atlassian.net/rest/api/3/statuscategory/2",
+      "id": 2,
+      "key": "new",
+      "colorName": "blue-gray",
+      "name": "To Do"
+     }
+    },
+    "labels": []
+   }
+  }
+ ],
+ "isLast": false
+}

@@ -1,0 +1,532 @@
+{
+ "as_of": "2026-09-30",
+ "window_days": 30,
+ "open_total": 156,
+ "new_in_window": 25,
+ "resolved_in_window": 23,
+ "net_in_window": 2,
+ "hygiene": {
+  "no_fix_version": 150,
+  "no_component": 97,
+  "no_assignee": 50,
+  "stale": 130
+ },
+ "releases": [
+  {
+   "name": "Unagi 21.0.2",
+   "release_date": null,
+   "rag": "Red",
+   "rag_basis": "undated: blockers/criticals/slips only",
+   "scope": 5,
+   "open": 1,
+   "done_pct": 80.0,
+   "open_blockers": 1,
+   "open_criticals": 0,
+   "days_to_release": null,
+   "slips_in": 0,
+   "open_keys": [
+    "SPEC-5676"
+   ]
+  },
+  {
+   "name": "Vimba 22.0.0",
+   "release_date": null,
+   "rag": "Green",
+   "rag_basis": "undated: blockers/criticals/slips only",
+   "scope": 68,
+   "open": 2,
+   "done_pct": 97.1,
+   "open_blockers": 0,
+   "open_criticals": 0,
+   "days_to_release": null,
+   "slips_in": 0,
+   "open_keys": [
+    "SPEC-5672",
+    "SPEC-5673"
+   ]
+  },
+  {
+   "name": "master",
+   "release_date": null,
+   "rag": "Green",
+   "rag_basis": "undated: blockers/criticals/slips only",
+   "scope": 26,
+   "open": 5,
+   "done_pct": 80.8,
+   "open_blockers": 0,
+   "open_criticals": 0,
+   "days_to_release": null,
+   "slips_in": 0,
+   "open_keys": [
+    "SPEC-5585",
+    "SPEC-5586",
+    "SPEC-5672",
+    "SPEC-5673",
+    "SPEC-5688"
+   ]
+  },
+  {
+   "name": "Quillback 17.1.7",
+   "release_date": "2025-04-03",
+   "rag": "Released",
+   "rag_basis": "released",
+   "scope": 2,
+   "open": 0,
+   "done_pct": 100.0,
+   "open_blockers": 0,
+   "open_criticals": 0,
+   "days_to_release": -545,
+   "slips_in": 0,
+   "open_keys": []
+  }
+ ],
+ "versions_complete_not_released": 24,
+ "open_blockers_criticals": 18,
+ "blockers": [
+  {
+   "key": "SPEC-4693",
+   "summary": "Weston ini mix-ups in agl-image-flutter vs agl-demo-cluster-support",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1339,
+   "idle_days": 1274,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-4963",
+   "summary": "Renesas RCar GPU Crash",
+   "component": "Graphics, flutter",
+   "priority": "Blocker",
+   "age_days": 1057,
+   "idle_days": 358,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5487",
+   "summary": "CI: unmatched board: flutter-sdk-native fails to fetch https://github.com/flutter/goldens.git",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 371,
+   "idle_days": 357,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5444",
+   "summary": "Enhance agl-rdp to support flutter over rdp in ec2",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 488,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5468",
+   "summary": "source-han-sans fonts packages unbuildable in quillback",
+   "component": "Build and Tools",
+   "priority": "Blocker",
+   "age_days": 447,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5483",
+   "summary": "lava infra: PI5 needs to boot using dtb specified in test-description yaml",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 378,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5561",
+   "summary": "flutter-auto 3.38.3 (qemuriscv) - Failed to choose EGL config",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 258,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5625",
+   "summary": "quillback: flutter fetch error",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 125,
+   "idle_days": 125,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5676",
+   "summary": "Prepare Ultimate Unagi v21.0.3",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 55,
+   "idle_days": 55,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5687",
+   "summary": "Add user to jira write group",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 35,
+   "idle_days": 35,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5700",
+   "summary": "Prepare documentation for Vibrant Vimba",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5701",
+   "summary": "Fix typos and spelling in the documentation",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5705",
+   "summary": "Use variables for branch names in documentation",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5712",
+   "summary": "Prepare Vibrant Vimba 22.0.0",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 15,
+   "idle_days": 15,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5713",
+   "summary": "kuksa-client: rpm transaction test error",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 13,
+   "idle_days": 13,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5718",
+   "summary": "[Repo Request] Create repository for bluez_media_native GSoC26",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1,
+   "idle_days": 1,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5719",
+   "summary": "bluetoothd crashes with NULL dereference on MediaItem1.Play() when AVRCP browsing is inactive",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1,
+   "idle_days": 1,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5375",
+   "summary": "rvgpu-proxy crashes and it is unable to re-issue initial screen command on rpi4 on second try",
+   "component": "none",
+   "priority": "Critical",
+   "age_days": 587,
+   "idle_days": 182,
+   "assigned": true
+  }
+ ],
+ "past_due": [],
+ "escalation_count": 17,
+ "escalations": [
+  {
+   "key": "SPEC-4693",
+   "summary": "Weston ini mix-ups in agl-image-flutter vs agl-demo-cluster-support",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1339,
+   "idle_days": 1274,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-4963",
+   "summary": "Renesas RCar GPU Crash",
+   "component": "Graphics, flutter",
+   "priority": "Blocker",
+   "age_days": 1057,
+   "idle_days": 358,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5487",
+   "summary": "CI: unmatched board: flutter-sdk-native fails to fetch https://github.com/flutter/goldens.git",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 371,
+   "idle_days": 357,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5444",
+   "summary": "Enhance agl-rdp to support flutter over rdp in ec2",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 488,
+   "idle_days": 231,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5468",
+   "summary": "source-han-sans fonts packages unbuildable in quillback",
+   "component": "Build and Tools",
+   "priority": "Blocker",
+   "age_days": 447,
+   "idle_days": 231,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5483",
+   "summary": "lava infra: PI5 needs to boot using dtb specified in test-description yaml",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 378,
+   "idle_days": 231,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5561",
+   "summary": "flutter-auto 3.38.3 (qemuriscv) - Failed to choose EGL config",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 258,
+   "idle_days": 231,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5625",
+   "summary": "quillback: flutter fetch error",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 125,
+   "idle_days": 125,
+   "assigned": false,
+   "rule": "E1, E4",
+   "rule_text": "Blocker open > 7d and idle > 3d; Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5676",
+   "summary": "Prepare Ultimate Unagi v21.0.3",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 55,
+   "idle_days": 55,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5687",
+   "summary": "Add user to jira write group",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 35,
+   "idle_days": 35,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5700",
+   "summary": "Prepare documentation for Vibrant Vimba",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false,
+   "rule": "E1, E4",
+   "rule_text": "Blocker open > 7d and idle > 3d; Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5701",
+   "summary": "Fix typos and spelling in the documentation",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false,
+   "rule": "E1, E4",
+   "rule_text": "Blocker open > 7d and idle > 3d; Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5705",
+   "summary": "Use variables for branch names in documentation",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 27,
+   "idle_days": 27,
+   "assigned": false,
+   "rule": "E1, E4",
+   "rule_text": "Blocker open > 7d and idle > 3d; Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5712",
+   "summary": "Prepare Vibrant Vimba 22.0.0",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 15,
+   "idle_days": 15,
+   "assigned": true,
+   "rule": "E1",
+   "rule_text": "Blocker open > 7d and idle > 3d"
+  },
+  {
+   "key": "SPEC-5713",
+   "summary": "kuksa-client: rpm transaction test error",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 13,
+   "idle_days": 13,
+   "assigned": false,
+   "rule": "E1, E4",
+   "rule_text": "Blocker open > 7d and idle > 3d; Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5719",
+   "summary": "bluetoothd crashes with NULL dereference on MediaItem1.Play() when AVRCP browsing is inactive",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1,
+   "idle_days": 1,
+   "assigned": false,
+   "rule": "E4",
+   "rule_text": "Open Blocker/Critical with no assignee"
+  },
+  {
+   "key": "SPEC-5375",
+   "summary": "rvgpu-proxy crashes and it is unable to re-issue initial screen command on rpi4 on second try",
+   "component": "none",
+   "priority": "Critical",
+   "age_days": 587,
+   "idle_days": 182,
+   "assigned": true,
+   "rule": "E2",
+   "rule_text": "Critical open > 14d and idle > 7d"
+  }
+ ],
+ "agenda_items": [
+  {
+   "key": "SPEC-4693",
+   "summary": "Weston ini mix-ups in agl-image-flutter vs agl-demo-cluster-support",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 1339,
+   "idle_days": 1274,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-4963",
+   "summary": "Renesas RCar GPU Crash",
+   "component": "Graphics, flutter",
+   "priority": "Blocker",
+   "age_days": 1057,
+   "idle_days": 358,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5487",
+   "summary": "CI: unmatched board: flutter-sdk-native fails to fetch https://github.com/flutter/goldens.git",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 371,
+   "idle_days": 357,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5444",
+   "summary": "Enhance agl-rdp to support flutter over rdp in ec2",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 488,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5468",
+   "summary": "source-han-sans fonts packages unbuildable in quillback",
+   "component": "Build and Tools",
+   "priority": "Blocker",
+   "age_days": 447,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5483",
+   "summary": "lava infra: PI5 needs to boot using dtb specified in test-description yaml",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 378,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5561",
+   "summary": "flutter-auto 3.38.3 (qemuriscv) - Failed to choose EGL config",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 258,
+   "idle_days": 231,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5625",
+   "summary": "quillback: flutter fetch error",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 125,
+   "idle_days": 125,
+   "assigned": false
+  },
+  {
+   "key": "SPEC-5676",
+   "summary": "Prepare Ultimate Unagi v21.0.3",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 55,
+   "idle_days": 55,
+   "assigned": true
+  },
+  {
+   "key": "SPEC-5687",
+   "summary": "Add user to jira write group",
+   "component": "none",
+   "priority": "Blocker",
+   "age_days": 35,
+   "idle_days": 35,
+   "assigned": true
+  }
+ ]
+}

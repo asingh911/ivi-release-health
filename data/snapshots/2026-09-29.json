@@ -1,0 +1,1090 @@
+{
+ "as_of": "2026-09-29",
+ "open_issues": {
+  "SPEC-2234": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Connectivity"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4896": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2237": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2238": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2239": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4955": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Build and Tools",
+    "Graphics",
+    "Instrument Cluster"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2240": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2178": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2179": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2321": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2235": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Connectivity"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2236": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2131": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Audio Manager"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2200": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Audio Manager",
+    "Bluetooth",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2207": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2209": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2213": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2336": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Documentation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2241": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2242": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2243": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2244": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2245": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2246": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2221": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Kernel/ OS"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2222": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Kernel/ OS"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2223": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2224": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2226": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2225": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2227": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2228": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2229": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2230": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2231": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2232": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2455": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2791": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2168": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2170": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-3284": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Documentation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-3163": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5065": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5231": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Connectivity"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-2132": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Graphics"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5240": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Graphics"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5007": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5168": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Build and Tools"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5098": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-3944": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "Instrument Cluster"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5114": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4232": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "IVI",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4236": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4606": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4685": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4680": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4417": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4688": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-1394": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4693": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4928": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "App Framework",
+    "Documentation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4498": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4499": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4924": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5159": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5090": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-3858": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4710": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5148": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2233": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Bluetooth",
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4828": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4208": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4627": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "Kernel/ OS"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4998": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "Connectivity"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4830": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4983": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Multimedia"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5139": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4963": {
+   "status_category": "In Progress",
+   "priority": "Blocker",
+   "components": [
+    "Graphics",
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4930": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [
+    "Documentation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5140": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-2182": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4814": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5055": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "IVI",
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-4687": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-4835": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5272": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Graphics",
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5277": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5366": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5374": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5375": {
+   "status_category": "To Do",
+   "priority": "Critical",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5379": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5382": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5384": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5408": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Navigation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5418": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "IVI",
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5435": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Navigation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5444": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5468": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [
+    "Build and Tools"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5472": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5483": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5487": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5499": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5510": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5512": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5526": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5529": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5530": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5541": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5551": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5553": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5561": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5576": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Navigation"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5585": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": [
+    "master"
+   ]
+  },
+  "SPEC-5586": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": [
+    "master"
+   ]
+  },
+  "SPEC-5587": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5590": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5595": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5597": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "CIAT"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5607": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5618": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Infrastructure"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5619": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5625": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5639": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5645": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5653": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5666": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "VirtIO"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5668": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5672": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "VirtIO"
+   ],
+   "fix_versions": [
+    "Vimba 22.0.0",
+    "master"
+   ]
+  },
+  "SPEC-5673": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "VirtIO"
+   ],
+   "fix_versions": [
+    "Vimba 22.0.0",
+    "master"
+   ]
+  },
+  "SPEC-5675": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Documentation",
+    "Kernel/ OS"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5676": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": [
+    "Unagi 21.0.2"
+   ]
+  },
+  "SPEC-5678": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [
+    "Build and Tools",
+    "IVI"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5679": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5681": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Graphics"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5683": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Bluetooth"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5684": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5686": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "App Framework"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5687": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5688": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Build and Tools"
+   ],
+   "fix_versions": [
+    "master"
+   ]
+  },
+  "SPEC-5689": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "IVI",
+    "flutter"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5700": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5701": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5703": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Kernel/ OS"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5704": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [
+    "Bluetooth"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5705": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5706": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5707": {
+   "status_category": "In Progress",
+   "priority": "Major",
+   "components": [
+    "Build and Tools"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5708": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5709": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5712": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5713": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5714": {
+   "status_category": "To Do",
+   "priority": "Major",
+   "components": [
+    "Build and Tools"
+   ],
+   "fix_versions": []
+  },
+  "SPEC-5715": {
+   "status_category": "In Progress",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5717": {
+   "status_category": "To Do",
+   "priority": "Minor",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5718": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  },
+  "SPEC-5719": {
+   "status_category": "To Do",
+   "priority": "Blocker",
+   "components": [],
+   "fix_versions": []
+  }
+ }
+}
