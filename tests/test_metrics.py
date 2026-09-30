@@ -313,3 +313,18 @@ def test_chase_first_ranks_at_risk_then_unowned(cfg):
     reasons = {e["key"]: e["reason"] for e in a["escalations"]}
     assert reasons == {"SPEC-1": "Blocker stalled", "SPEC-2": "Critical stalled, no owner",
                        "SPEC-3": "Open in a released version"}
+
+
+def test_escalations_are_listed_in_chase_order_and_flag_saturation(cfg):
+    from ivi_tracker.analysis import verdict
+    a = analyze(ISSUES, VERSIONS, AS_OF, cfg, 30)
+    assert [e["key"] for e in a["escalations"]] == ["SPEC-1", "SPEC-2", "SPEC-3"]
+    assert verdict(a)["saturated"] is False            # 3 escalations vs 5 blockers/criticals: not over half
+    cfg["escalation"]["E1"].update(min_age_days=0, min_idle_days=0)
+    assert verdict(analyze(ISSUES, VERSIONS, AS_OF, cfg, 30))["saturated"] is True
+
+
+def test_branches_are_labelled(cfg):
+    cfg["readiness"]["branch_names"] = ["Rel 3.0"]
+    rows = analyze(ISSUES, VERSIONS, AS_OF, cfg, 30)["readiness"]["rows"]
+    assert {r["name"]: r["is_branch"] for r in rows}["Rel 3.0"] is True

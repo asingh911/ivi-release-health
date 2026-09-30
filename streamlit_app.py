@@ -13,6 +13,7 @@ from __future__ import annotations
 import copy
 import hmac
 import html
+import re
 import json
 import os
 import sys
@@ -44,24 +45,29 @@ STATUS = {"Red": "#d03b3b", "Amber": "#fab219", "Green": "#0ca30c", "No date": "
 
 STYLES = """
 <style>
-.verdict { border: 1px solid rgba(128,128,128,.28); border-radius: 10px; padding: 1.1rem 1.25rem;
-           margin: .25rem 0 1rem; }
-.verdict h2 { font-size: 1.45rem; line-height: 1.3; margin: 0 0 .35rem; padding: 0; font-weight: 700; }
+.verdict { border: 1px solid rgba(128,128,128,.28); border-radius: 10px; padding: 1.25rem 1.5rem 1rem;
+           margin: .25rem 0 .75rem; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+           gap: .5rem 2.5rem; }
+.verdict .foot { grid-column: 1 / -1; border-top: 1px solid rgba(128,128,128,.2); padding-top: .7rem;
+                 margin-top: .4rem; font-size: .85rem; opacity: .8; max-width: none; }
+.verdict .headline { font-size: 1.9rem; line-height: 1.2; font-weight: 700; margin: 0 0 .5rem; }
+.verdict .subhead { font-size: 1rem; font-weight: 700; margin: .3rem 0 .4rem; }
+.verdict .why { display: block; font-size: .88rem; opacity: .75; }
 .verdict p { margin: .2rem 0; }
-.verdict .quiet, .glance { opacity: .72; font-size: .92rem; }
-.glance { margin: 0 0 1.25rem; }
+@media (max-width: 820px) { .verdict { grid-template-columns: 1fr; } .verdict .headline { font-size: 1.5rem; } }
+.verdict .quiet { opacity: .72; font-size: .92rem; }
 .rag { display: inline-flex; align-items: center; gap: .4em; padding: .1em .6em .12em; border-radius: 999px;
        font-size: .8em; font-weight: 600; vertical-align: .12em; background: var(--rag-bg); white-space: nowrap; }
 .rag::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--rag); }
 .stMarkdown table, .verdict { font-variant-numeric: tabular-nums; }
 ::selection { background: rgba(37,106,191,.3); }
-h1 { font-size: 1.5rem !important; }
-.verdict h2 { font-size: 1.75rem; }
+h1 { font-size: 1.25rem !important; }
+h3 { font-size: 1.2rem !important; }
 .stMarkdown p, .stMarkdown li, [data-testid="stCaptionContainer"] p { max-width: 75ch; }
 .stMarkdown table p { max-width: none; }
 a[href*="/browse/"] { white-space: nowrap; }
-.chase { margin: .6rem 0 0; padding: 0 0 0 1.1rem; }
-.chase li { margin: .15rem 0; }
+.chase { margin: 0 0 .5rem; padding: 0 0 0 1.2rem; }
+.chase li { margin: 0 0 .45rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 </style>
 """
@@ -172,36 +178,52 @@ def spend_ai_draft(cap: int) -> bool:
 
 # ---------- settings ----------
 
-def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
+def version_sort_key(name: str) -> list:
+    """Natural order: 'Quillback 17.1.8' before 'Quillback 17.1.10'."""
+    return [int(part) if part.isdigit() else part.lower() for part in re.split(r"(\d+)", name)]
+
+
+def sidebar_settings(defaults: dict, versions: list[dict], issues: list[dict]) -> tuple[dict, int]:
     cfg = copy.deepcopy(defaults)
     sb = st.sidebar
     sb.header("Settings")
+    # Every control's key carries a generation number; Reset bumps it, so each control is rebuilt from its
+    # default. (Deleting session keys left some controls showing stale values while the page used defaults.)
+    gen = st.session_state.setdefault("settings_gen", 0)
+
+    def k(name: str) -> str:
+        return f"s_{name}_{gen}"
+
     if sb.button("Reset to defaults", use_container_width=True):
-        for k in [k for k in st.session_state if k.startswith("s_")]:
-            del st.session_state[k]
+        st.session_state.settings_gen = gen + 1
         st.rerun()
 
-    window = sb.select_slider("Window (days)", WINDOWS, value=defaults["window_days"], key="s_window",
+    window = sb.select_slider("Window (days)", WINDOWS, value=defaults["window_days"], key=k("window"),
                               help="Period for new / resolved counts. AGL is quiet, so 30 is the default.")
-    cfg["agenda_size"] = sb.slider("Bug-review agenda size", 5, 20, defaults["agenda_size"], key="s_agenda")
-    cfg["stale_days"] = sb.number_input("Stale after (idle days)", 7, 365, defaults["stale_days"], key="s_stale")
+    cfg["agenda_size"] = sb.slider("Bug-review agenda size", 5, 20, defaults["agenda_size"], key=k("agenda"))
+    cfg["stale_days"] = sb.number_input("Stale after (idle days)", 7, 365, defaults["stale_days"], key=k("stale"))
 
     with sb.expander("Release readiness (RAG)"):
         rag = cfg["rag"]
-        rag["amber_done_pct"] = st.slider("Amber if done % is below", 50, 100, rag["amber_done_pct"], key="s_pct")
+        rag["amber_done_pct"] = st.slider("Amber if done % is below", 50, 100, rag["amber_done_pct"], key=k("pct"))
         rag["amber_days_to_release"] = st.number_input("…within this many days of release", 1, 90,
-                                                       rag["amber_days_to_release"], key="s_days")
-        rag["rate_undated"] = st.toggle("Rate versions with no release date", rag["rate_undated"], key="s_undated",
+                                                       rag["amber_days_to_release"], key=k("days"))
+        rag["rate_undated"] = st.toggle("Rate versions with no release date", rag["rate_undated"], key=k("undated"),
                                         help="On: an open blocker makes it Red; a critical or slip makes it "
                                              "Amber. Off: shown as 'No date'.")
 
     with sb.expander("Target release dates"):
         st.caption("AGL doesn't set release dates in Jira. Add your own targets to turn on the date-based rules.")
-        unreleased = sorted(v["name"] for v in versions if not v["released"] and not v["archived"])
+        open_ids = {vid for i in issues if i["status_category"] != "Done" for vid in i["fix_versions"]}
+        pending = [v for v in versions if not v["released"] and not v["archived"]]
+        active = sorted((v["name"] for v in pending if v["id"] in open_ids), key=version_sort_key)
+        rest = sorted((v["name"] for v in pending if v["id"] not in open_ids), key=version_sort_key)
+        show_rest = st.toggle(f"Also show {len(rest)} versions with no open work", False, key=k("plan_all"))
+        unreleased = active + (rest if show_rest else [])
         plan_df = pd.DataFrame({"Version": unreleased, "Target date": [None] * len(unreleased)})
         plan_df["Target date"] = pd.to_datetime(plan_df["Target date"])
         edited = st.data_editor(
-            plan_df, key="s_plan", hide_index=True, use_container_width=True, disabled=["Version"],
+            plan_df, key=k("plan"), hide_index=True, use_container_width=True, disabled=["Version"],
             column_config={"Target date": st.column_config.DateColumn(format="YYYY-MM-DD")})
         cfg["release_plan"] = {row["Version"]: row["Target date"].date().isoformat()
                                for _, row in edited.iterrows() if pd.notna(row["Target date"])}
@@ -213,11 +235,11 @@ def sidebar_settings(defaults: dict, versions: list[dict]) -> tuple[dict, int]:
             st.markdown(f"**{rid}:** {rule['priority']} stalled")
             c1, c2 = st.columns(2)
             rule["min_age_days"] = c1.number_input("Open more than (days)", 0, 365, rule["min_age_days"],
-                                                   key=f"s_{rid}_age")
+                                                   key=k(f"{rid}_age"))
             rule["min_idle_days"] = c2.number_input("Idle more than (days)", 0, 365, rule["min_idle_days"],
-                                                    key=f"s_{rid}_idle")
-        esc["E3"]["enabled"] = st.toggle("E3: open issue in a released version", True, key="s_E3")
-        esc["E4"]["enabled"] = st.toggle("E4: Blocker/Critical with no owner", True, key="s_E4")
+                                                    key=k(f"{rid}_idle"))
+        esc["E3"]["enabled"] = st.toggle("E3: open issue in a released version", True, key=k("E3"))
+        esc["E4"]["enabled"] = st.toggle("E4: Blocker/Critical with no owner", True, key=k("E4"))
     return cfg, window
 
 
@@ -233,39 +255,59 @@ def rag_cell_style(value: str) -> str:
     return f"background-color: {color}33; font-weight: 600" if color else ""
 
 
-def show_verdict(a: dict, window: int) -> None:
-    """Lead with the answer: the worst release, what blocks it, and what needs escalating."""
+def version_label(row: dict) -> str:
+    return f"{row['name']} (branch)" if row.get("is_branch") else row["name"]
+
+
+def show_verdict(a: dict, window: int, source_line: str) -> None:
+    """Lead with the answer: the worst release and what blocks it, beside what to chase first."""
     v = analysis.verdict(a)
-    worst, parts = v["worst"], []
+    worst, left, right = v["worst"], [], []
     if worst is None:
-        parts.append("<h2>No unreleased versions have open work</h2>")
+        left.append('<div class="headline" role="heading" aria-level="2">No unreleased versions have open work</div>')
     elif worst["rag"] == "Green":
-        parts.append(f"<h2>{rag_pill('Green')} All active releases are on track</h2>")
+        left.append(f'<div class="headline" role="heading" aria-level="2">{rag_pill("Green")} '
+                    'All active releases are on track</div>')
     else:
         state = "is at risk" if worst["rag"] == "Red" else "needs attention"
-        parts.append(f"<h2>{rag_pill(worst['rag'])} {html.escape(worst['name'])} {state}</h2>")
+        left.append(f'<div class="headline" role="heading" aria-level="2">{rag_pill(worst["rag"])} '
+                    f'{html.escape(version_label(worst))} {state}</div>')
         for c in v["culprits"][:2]:
-            parts.append(f'<p>Open {c["priority"]} on this release: {jira_link(c["key"])} '
-                         f'{html.escape(c["summary"])} · idle {c["idle_days"]} days</p>')
+            left.append(f'<p>Open {c["priority"]} on this release: {jira_link(c["key"])} '
+                        f'{html.escape(c["summary"])} · idle {c["idle_days"]} days</p>')
         if worst.get("rag_basis", "full") != "full":
-            parts.append('<p class="quiet">Rated on blockers, criticals, and slips: Jira has no release date '
-                         'for this version.</p>')
+            left.append('<p class="quiet">Rated on blockers, criticals, and slips: Jira has no release date '
+                        'for this version.</p>')
     if v["others"]:
-        others = " · ".join(f"{html.escape(r['name'])} {rag_pill(r['rag'])} {r['open']} open"
+        others = " · ".join(f"{html.escape(version_label(r))} {rag_pill(r['rag'])} {r['open']} open"
                             for r in v["others"])
-        parts.append(f'<p class="quiet">Other active releases: {others}</p>')
-    if v["chase"]:
-        items = "".join(f'<li>{jira_link(e["key"])} {html.escape(e["summary"])} · {html.escape(e["reason"])}'
-                        f'{", on an at-risk release" if e["at_risk"] else ""}, idle {e["idle_days"]} days</li>'
-                        for e in v["chase"])
-        parts.append(f'<p><strong>Chase these first</strong> ({v["escalations"]} of {v["open_blocker_critical"]} '
-                     f'open Blocker/Critical issues trip an escalation rule):</p><ul class="chase">{items}</ul>')
-    st.markdown(f'<div class="verdict">{"".join(parts)}</div>', unsafe_allow_html=True)
-
+        left.append(f'<p class="quiet">Other active versions: {others}</p>')
     f = a["flow"]
-    st.markdown(f'<p class="glance">{a["open_total"]} open issues, {a["open_total"] - a["open_unscoped"]} of them '
+    left.append(f'<p class="quiet">{a["open_total"]} open issues, {a["open_total"] - a["open_unscoped"]} of them '
                 f'assigned to a release · {f["new"]} new and {f["resolved"]} resolved in the last {window} days '
-                f'(net {f["net"]:+d})</p>', unsafe_allow_html=True)
+                f'(net {f["net"]:+d})</p>')
+
+    if v["chase"]:
+        items = "".join(f'<li>{jira_link(e["key"])} {html.escape(e["summary"])}'
+                        f'<span class="why">{html.escape(e["reason"])}'
+                        f'{" · on an at-risk release" if e["at_risk"] else ""} · idle {e["idle_days"]} days</span></li>'
+                        for e in v["chase"])
+        note = (f'{v["escalated_blocker_critical"]} of {v["open_blocker_critical"]} open Blocker/Critical issues trip a rule at '
+                "these thresholds, so they're ranked: at-risk release first, then no owner, then priority, then "
+                "idle time." if v["saturated"] else
+                f'{v["escalations"]} issues trip an escalation rule.')
+        right.append(f'<div class="subhead">Chase these first</div><ol class="chase">{items}</ol>'
+                     f'<p class="quiet">{note}</p>')
+    else:
+        right.append('<div class="subhead">Nothing to escalate</div>'
+                     '<p class="quiet">No open issue trips an escalation rule at these thresholds.</p>')
+
+    foot = ("Releases use fish codenames (Unagi 21, Vimba 22); Red, Amber, and Green rate how ready each one is. "
+            "Every number here is computed from the Jira data in code; AI only writes the narrative, and each "
+            f"number it writes is checked against those computations. {source_line}")
+    st.markdown(f'<div class="verdict"><div class="col">{"".join(left)}</div>'
+                f'<div class="col">{"".join(right)}</div><p class="foot">{foot}</p></div>',
+                unsafe_allow_html=True)
 
 
 def jira_link(key: str) -> str:
@@ -298,9 +340,9 @@ def trend_chart(df: pd.DataFrame, field: str, title: str) -> alt.LayerChart:
 
 
 def show_narrative(heading: str, text: str) -> None:
-    if text:
-        st.subheader(heading)
-        st.markdown(render.linkify(text))
+    """Keep the section in place either way, so the page doesn't silently change shape."""
+    st.subheader(heading)
+    st.markdown(render.narrative(text))
 
 
 def show_status(a: dict, drafts: llm.Drafts, stale_days: int) -> None:
@@ -308,7 +350,7 @@ def show_status(a: dict, drafts: llm.Drafts, stale_days: int) -> None:
     st.subheader("Release readiness")
     rows = a["readiness"]["rows"]
     st.dataframe(pd.DataFrame([{
-        "Version": r["name"], "RAG": r["rag"],
+        "Version": version_label(r), "RAG": r["rag"],
         "Release date": r["release_date"] or "no date", "Scope": r["scope"],
         "Done %": r["done_pct"], "Open": r["open"],
         "Open blockers": r["open_blockers"], "Open criticals": r["open_criticals"],
@@ -386,7 +428,7 @@ def main() -> None:
         st.stop()
     issues, versions = data["issues"], data["versions"]
     as_of = date.fromisoformat(data["as_of"])
-    cfg, window = sidebar_settings(defaults, versions)
+    cfg, window = sidebar_settings(defaults, versions, issues)
 
     a = analysis.analyze(issues, versions, as_of, cfg, window)
     facts = llm.build_facts(a, cfg)
@@ -408,30 +450,25 @@ def main() -> None:
 
     st.markdown(STYLES, unsafe_allow_html=True)
     st.title(APP_NAME)
-    st.markdown(INTRO)
-    show_verdict(a, window)
-    st.caption("Releases use fish codenames (Unagi 21, Vimba 22); Red, Amber, and Green rate how ready each one "
-               "is. Every number is computed from the Jira data in code; AI only writes the narrative, and each "
-               "number it writes is checked against those computations.")
-    st.caption(f"Project SPEC · {len(issues):,} issues · data as of {data['as_of']} · window {window} days · "
-               "thresholds are adjustable in the sidebar")
+    st.markdown(INTRO + f" Project SPEC · {len(issues):,} issues · data as of {data['as_of']} · "
+                f"window {window} days. Thresholds are adjustable in the sidebar.")
+    source_line = {"weekly": "The narrative below was drafted by AI in the weekly run, and every number in it "
+                             "matches these settings.",
+                   "session": "The narrative below was drafted by AI for these settings."}.get(source, "")
+    show_verdict(a, window, source_line)
 
     cap = int(defaults.get("app", {}).get("max_ai_drafts_per_day", 20))
-    if source == "weekly":
-        st.caption(":material/verified: Narrative drafted by AI in the weekly run; every number in it matches "
-                   "these settings.")
-    elif source == "session":
-        st.caption(":material/verified: Narrative drafted by AI for these settings; every number in it is checked.")
-    else:
+    if source not in ("weekly", "session"):
         left, has_key = ai_remaining(cap), bool(secret("OPENAI_API_KEY"))
         c1, c2 = st.columns([3, 1], vertical_alignment="center")
         c1.caption(":material/edit_note: " + (
             "Parts of the weekly narrative no longer match these settings, so they're hidden. Every table is "
             "current." if source == "partial" else
             "No narrative is drafted for these settings. Every table is current."))
-        why = None if has_key and left else ("AI drafting isn't set up on this app." if not has_key
-                                            else "Today's AI drafts are used up. Try again tomorrow.")
-        if c2.button(f"Draft with AI ({left} left today)", disabled=why is not None, help=why,
+        blocked = ("AI drafting isn't set up on this app." if not has_key else
+                   "Today's AI drafts are used up. Try again tomorrow." if not left else None)
+        if c2.button(f"Draft with AI · {left} left today", disabled=blocked is not None,
+                     help=blocked or "The daily drafts are shared by everyone using this app.",
                      use_container_width=True):
             if spend_ai_draft(cap):
                 os.environ.setdefault("OPENAI_API_KEY", secret("OPENAI_API_KEY") or "")

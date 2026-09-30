@@ -4,10 +4,12 @@
 
 {% set notes = d.escalation_notes -%}
 {% if a.escalations -%}
-| Issue | Why it escalates | Release | Age (days) | Idle (days) |{% if notes %} Escalation note |{% endif %}
-|---|---|---|---|---|{% if notes %}---|{% endif %}
+{{ a.escalations | length }} issues trip an escalation rule, in the order worth chasing: issues on at-risk releases first, then those with no owner, then highest priority, then longest idle.
+
+| # | Issue | Why it escalates | Release | Age (days) | Idle (days) |{% if notes %} Escalation note |{% endif %}
+|---|---|---|---|---|---|{% if notes %}---|{% endif %}
 {% for e in a.escalations -%}
-| {{ link(e.key) }} {{ cell(e.summary) }} | {{ e.reason }} | {{ cell(e.releases | join(", ") or "none") }} | {{ e.age_days }} | {{ e.idle_days }} |{% if notes %} {{ cell(notes.get(e.key, "")) }} |{% endif %}
+| {{ loop.index }} | {{ link(e.key) }} {{ cell(e.summary) }} | {{ e.reason }} | {{ cell(e.releases | join(", ") or "none") }} | {{ e.age_days }} | {{ e.idle_days }} |{% if notes %} {{ cell(notes.get(e.key, "")) }} |{% endif %}
 {% endfor %}
 {%- else -%}
 No issues trip an escalation rule.

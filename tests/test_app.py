@@ -51,12 +51,12 @@ def test_dashboard_renders_after_login(monkeypatch):
 
 def test_default_settings_reuse_weekly_ai_draft(monkeypatch):
     at = login(app(monkeypatch))
-    assert any("weekly run" in c.value for c in at.caption)
+    assert any("drafted by AI in the weekly run" in m.value for m in at.markdown)
 
 
 def test_changed_settings_recompute_and_offer_ai(monkeypatch):
     at = login(app(monkeypatch))
-    at.select_slider(key="s_window").set_value(7).run()
+    at.select_slider(key="s_window_0").set_value(7).run()
     assert not at.exception
     assert any("in the last 7 days" in m.value for m in at.markdown)
     # a settings change never shows command-line advice or an alarm; it says what is current
@@ -117,3 +117,15 @@ def test_short_share_key_is_ignored(monkeypatch):
     at.query_params["key"] = "short"
     at.run()
     assert "locked" in at.error[0].value
+
+
+def test_reset_restores_every_control(monkeypatch):
+    at = login(app(monkeypatch))
+    at.select_slider(key="s_window_0").set_value(7).run()
+    at.number_input(key="s_stale_0").set_value(60).run()
+    at.sidebar.button[0].click().run()                    # Reset to defaults
+    assert not at.exception
+    # controls are rebuilt under a new generation, showing the defaults the page computes with
+    assert at.select_slider(key="s_window_1").value == 30
+    assert at.number_input(key="s_stale_1").value == 30
+    assert any("in the last 30 days" in m.value for m in at.markdown)

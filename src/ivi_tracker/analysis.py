@@ -13,6 +13,9 @@ AT_RISK = ("Red", "Amber")
 def analyze(issues: list[dict], versions: list[dict], as_of: date, cfg: dict, window_days: int) -> dict:
     open_issues = [i for i in issues if metrics.is_open(i)]
     readiness = metrics.release_readiness(versions, issues, as_of, cfg)
+    branches = set(cfg.get("readiness", {}).get("branch_names", []))
+    for row in readiness["rows"]:
+        row["is_branch"] = row["name"] in branches
     at_risk = {r["name"] for r in readiness["rows"] if r["rag"] in AT_RISK}
     names = {v["id"]: v["name"] for v in versions}
     releases_of = {i["key"]: sorted(names[v] for v in i["fix_versions"] if v in names) for i in open_issues}
@@ -22,7 +25,8 @@ def analyze(issues: list[dict], versions: list[dict], as_of: date, cfg: dict, wi
         return {**row, "releases": releases, "at_risk": bool(at_risk & set(releases))}
 
     blockers = [with_release(b) for b in metrics.blocker_view(issues, as_of)]
-    escalations = [with_release(e) for e in escalation.evaluate(issues, versions, as_of, cfg["escalation"])]
+    escalations = sorted((with_release(e) for e in escalation.evaluate(issues, versions, as_of, cfg["escalation"])),
+                         key=chase_order)
     return {
         "as_of": as_of.isoformat(),
         "window_days": window_days,
@@ -42,11 +46,14 @@ def analyze(issues: list[dict], versions: list[dict], as_of: date, cfg: dict, wi
     }
 
 
+def chase_order(e: dict) -> tuple:
+    """Escalations worth chasing first: at-risk release, then no owner, then priority, then idle time."""
+    return (not e["at_risk"], "E4" not in e["rules"], -metrics.PRIORITY_RANK.get(e["priority"], 0),
+            -e["idle_days"], e["key"])
+
+
 def chase_first(a: dict, n: int = 3) -> list[dict]:
-    """The escalations worth chasing first: at-risk release, then no owner, then priority, then idle time."""
-    return sorted(a["escalations"], key=lambda e: (not e["at_risk"], "E4" not in e["rules"],
-                                                   -metrics.PRIORITY_RANK.get(e["priority"], 0),
-                                                   -e["idle_days"], e["key"]))[:n]
+    return a["escalations"][:n]   # already in chase order
 
 
 def _keys(keys: list[str], n: int = 5) -> str:
@@ -100,12 +107,16 @@ def verdict(a: dict) -> dict:
     blockers_by_key = {b["key"]: b for b in a["blockers"]}
     culprits = [blockers_by_key[k] for k in (worst["open_keys"] if worst else []) if k in blockers_by_key]
     unowned = [b for b in a["blockers"] if not b["assigned"]]
+    escalated_bc = {e["key"] for e in a["escalations"]} & {b["key"] for b in a["blockers"]}
     return {
         "worst": worst,
         "culprits": culprits,
         "others": [r for r in active if r is not worst],
         "escalations": len(a["escalations"]),
         "chase": chase_first(a),
+        "escalated_blocker_critical": len(escalated_bc),
+        # When most blockers/criticals trip a rule, the list is only useful ranked; say so.
+        "saturated": bool(a["blockers"]) and len(escalated_bc) > len(a["blockers"]) / 2,
         "open_blocker_critical": len(a["blockers"]),
         "unowned_blocker_critical": len(unowned),
     }
