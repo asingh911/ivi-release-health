@@ -59,3 +59,55 @@ def test_changed_settings_recompute_and_offer_ai(monkeypatch):
     assert not at.exception
     assert at.metric[1].label == "New (7d)"
     assert any("differ from the weekly run" in w.value for w in at.warning)
+
+
+SHARE = "s3cret-share-key-0123456789"
+
+
+def share_app(monkeypatch, with_password=False):
+    monkeypatch.setenv("SHARE_KEY", SHARE)
+    if with_password:
+        monkeypatch.setenv("APP_PASSWORD", "test-pass")
+    else:
+        monkeypatch.delenv("APP_PASSWORD", raising=False)
+    monkeypatch.setattr("dotenv.load_dotenv", lambda *a, **k: None)
+    return st_testing.AppTest.from_file(APP, default_timeout=60)
+
+
+def test_share_link_logs_in_and_hides_key(monkeypatch):
+    at = share_app(monkeypatch)
+    at.query_params["key"] = SHARE
+    at.run()
+    assert not at.exception
+    assert at.title[0].value == "AGL Release Health"
+    assert "key" not in at.query_params
+
+
+def test_wrong_share_key_is_rejected(monkeypatch):
+    at = share_app(monkeypatch)
+    at.query_params["key"] = "not-the-right-key-at-all"
+    at.run()
+    assert "isn't valid" in at.error[0].value
+    assert not at.tabs
+
+
+def test_share_only_mode_has_no_password_form(monkeypatch):
+    at = share_app(monkeypatch)
+    at.run()
+    assert not at.text_input and "link you were sent" in at.info[0].value
+
+
+def test_password_still_works_alongside_share_link(monkeypatch):
+    at = share_app(monkeypatch, with_password=True)
+    login(at)
+    assert at.title[0].value == "AGL Release Health"
+
+
+def test_short_share_key_is_ignored(monkeypatch):
+    monkeypatch.setenv("SHARE_KEY", "short")
+    monkeypatch.delenv("APP_PASSWORD", raising=False)
+    monkeypatch.setattr("dotenv.load_dotenv", lambda *a, **k: None)
+    at = st_testing.AppTest.from_file(APP, default_timeout=60)
+    at.query_params["key"] = "short"
+    at.run()
+    assert "locked" in at.error[0].value

@@ -19,8 +19,9 @@ A GitHub Actions job runs the whole pipeline every Monday and commits the report
 
 ## Web app
 
-`streamlit_app.py` is an interactive view of the same report, password-protected so only people you share it
-with can open it. Change the window, RAG and escalation thresholds, agenda size, or target release dates in the
+`streamlit_app.py` is an interactive view of the same report, open only to people you share it with: send them
+a share link (`https://<app>/?key=<SHARE_KEY>`, one click, and the key is removed from the address bar once used)
+or a password (`APP_PASSWORD`). Rotate either secret to revoke access. Change the window, RAG and escalation thresholds, agenda size, or target release dates in the
 sidebar, and every table recomputes instantly. It also shows 26-week trends of open issues and open
 blockers/criticals, and downloads the three markdown artifacts for the current settings.
 
@@ -35,7 +36,7 @@ echo "APP_PASSWORD=choose-a-password" >> .env
 
 The app reads `data/app/data.json.gz`, which the weekly job refreshes, so it never calls Jira itself.
 To host it, deploy the repo on [Streamlit Community Cloud](https://share.streamlit.io) with `streamlit_app.py` as
-the main file and `APP_PASSWORD` and `OPENAI_API_KEY` as app secrets.
+the main file and `SHARE_KEY` (16+ characters), `APP_PASSWORD`, and `OPENAI_API_KEY` as app secrets.
 
 ## Architecture
 

@@ -2,7 +2,8 @@
 
 Reads the data the weekly job commits (data/app/data.json.gz), recomputes every metric live from the
 settings in the sidebar, and reuses the weekly AI narrative when the settings match that run. Changed
-settings can be re-drafted with AI, up to a daily cap. The whole app sits behind APP_PASSWORD.
+settings can be re-drafted with AI, up to a daily cap. The whole app sits behind a share link
+(?key=SHARE_KEY) and/or APP_PASSWORD.
 
 Run locally:  streamlit run streamlit_app.py
 """
@@ -48,18 +49,45 @@ def secret(name: str) -> str | None:
 
 # ---------- access ----------
 
+MIN_SHARE_KEY_LEN = 16   # a short share key would be guessable; ignore it rather than accept it
+
+
+def _matches(given: str | None, expected: str | None) -> bool:
+    return bool(given and expected) and hmac.compare_digest(given.encode(), expected.encode())
+
+
 def require_password() -> None:
+    """Gate the app. Viewers get in with the share link (?key=SHARE_KEY) or by typing APP_PASSWORD."""
     expected = secret("APP_PASSWORD")
-    if not expected:
-        st.error("This app is locked. Set `APP_PASSWORD` in the app's secrets (or `.env` locally).")
+    share_key = secret("SHARE_KEY")
+    if share_key and len(share_key) < MIN_SHARE_KEY_LEN:
+        share_key = None
+    if not expected and not share_key:
+        st.error("This app is locked. Set `APP_PASSWORD` and/or `SHARE_KEY` in the app's secrets "
+                 "(or `.env` locally).")
         st.stop()
     if st.session_state.get("authed"):
         return
+
+    # Share link: log in, then drop the key from the address bar so it isn't copied or bookmarked.
+    if "key" in st.query_params:
+        given = st.query_params["key"]
+        st.query_params.clear()
+        if _matches(given, share_key):
+            st.session_state.authed = True
+            st.rerun()
+        st.session_state.bad_link = True
+
     st.title("IVI Release Health")
+    if st.session_state.pop("bad_link", False):
+        st.error("That link isn't valid anymore. Ask the person who shared it for a new one.")
+    if not expected:
+        st.info("Open this app with the link you were sent.")
+        st.stop()
     with st.form("login"):
         attempt = st.text_input("Password", type="password")
         submitted = st.form_submit_button("Enter")
-    if submitted and hmac.compare_digest(attempt.encode(), expected.encode()):
+    if submitted and _matches(attempt, expected):
         st.session_state.authed = True
         st.rerun()
     if submitted:
