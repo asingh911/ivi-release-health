@@ -4,23 +4,23 @@
 
 | Key | Rule | Days open | Idle | Escalation note |
 |---|---|---|---|---|
-| [SPEC-4693](https://lf-automotivelinux.atlassian.net/browse/SPEC-4693) | E1 | 1339 | 1274 | Blocker idle 1274 days with no progress; please close it as stale or downgrade it. |
-| [SPEC-4963](https://lf-automotivelinux.atlassian.net/browse/SPEC-4963) | E1 | 1057 | 358 | Blocker idle 358 days with no progress; does the RCar GPU crash still reproduce on the current release, or should it be downgraded or closed? |
-| [SPEC-5487](https://lf-automotivelinux.atlassian.net/browse/SPEC-5487) | E1 | 371 | 357 | Blocker idle 357 days with no progress; does the goldens fetch failure still reproduce on the current release, or should it be downgraded or closed? |
-| [SPEC-5444](https://lf-automotivelinux.atlassian.net/browse/SPEC-5444) | E1 | 488 | 231 | Blocker idle 231 days with no progress; please decide whether the RDP flutter support work should be closed as stale or downgraded. |
-| [SPEC-5468](https://lf-automotivelinux.atlassian.net/browse/SPEC-5468) | E1 | 447 | 231 | Blocker idle 231 days with no progress; please decide whether the font build issue should be closed as stale or downgraded. |
-| [SPEC-5483](https://lf-automotivelinux.atlassian.net/browse/SPEC-5483) | E1 | 378 | 231 | Blocker idle 231 days with no progress; please decide whether the PI5 boot-dtb issue should be closed as stale or downgraded. |
-| [SPEC-5561](https://lf-automotivelinux.atlassian.net/browse/SPEC-5561) | E1 | 258 | 231 | Blocker idle 231 days with no progress; does the EGL config failure still reproduce on the current release, or should it be downgraded or closed? |
-| [SPEC-5625](https://lf-automotivelinux.atlassian.net/browse/SPEC-5625) | E1, E4 | 125 | 125 | Blocker idle 125 days with no progress and no owner; who will own the flutter fetch error? |
-| [SPEC-5676](https://lf-automotivelinux.atlassian.net/browse/SPEC-5676) | E1 | 55 | 55 | Blocker idle 55 days with no progress; please give a target date for the Ultimate Unagi preparation or confirm whether it still blocks a release. |
-| [SPEC-5687](https://lf-automotivelinux.atlassian.net/browse/SPEC-5687) | E1 | 35 | 35 | Blocker idle 35 days with no progress; please give a target date for the Jira write-group request or confirm whether it still blocks a release. |
-| [SPEC-5700](https://lf-automotivelinux.atlassian.net/browse/SPEC-5700) | E1, E4 | 27 | 27 | Blocker idle 27 days with no progress and no owner; who will own the Vibrant Vimba documentation? |
-| [SPEC-5701](https://lf-automotivelinux.atlassian.net/browse/SPEC-5701) | E1, E4 | 27 | 27 | Blocker idle 27 days with no progress and no owner; who will own the typos and spelling documentation fix? |
-| [SPEC-5705](https://lf-automotivelinux.atlassian.net/browse/SPEC-5705) | E1, E4 | 27 | 27 | Blocker idle 27 days with no progress and no owner; who will own the branch-name documentation update? |
-| [SPEC-5712](https://lf-automotivelinux.atlassian.net/browse/SPEC-5712) | E1 | 15 | 15 | Blocker idle 15 days with no progress; please give a target date for Vibrant Vimba 22.0.0 or confirm whether it still blocks a release. |
-| [SPEC-5713](https://lf-automotivelinux.atlassian.net/browse/SPEC-5713) | E1, E4 | 13 | 13 | Blocker idle 13 days with no progress and no owner; who will own the rpm transaction test error? |
-| [SPEC-5719](https://lf-automotivelinux.atlassian.net/browse/SPEC-5719) | E4 | 1 | 1 | Blocker idle 1 day with no progress and no owner; who will own the bluetoothd crash? |
-| [SPEC-5375](https://lf-automotivelinux.atlassian.net/browse/SPEC-5375) | E2 | 587 | 182 | Critical idle 182 days with no progress; does the rvgpu-proxy crash still reproduce on the current release, or should it be downgraded or closed? |
+| [SPEC-4693](https://lf-automotivelinux.atlassian.net/browse/SPEC-4693) | E1 | 1339 | 1274 | Blocker idle 1274 days on the Weston ini mix-ups; please decide whether to close it as stale or downgrade it. |
+| [SPEC-4963](https://lf-automotivelinux.atlassian.net/browse/SPEC-4963) | E1 | 1057 | 358 | Blocker idle 358 days on the RCar GPU crash; please confirm whether it still reproduces on the current release. |
+| [SPEC-5487](https://lf-automotivelinux.atlassian.net/browse/SPEC-5487) | E1 | 371 | 357 | Blocker idle 357 days on the flutter-sdk-native fetch failure; please confirm whether it still reproduces on the current release. |
+| [SPEC-5444](https://lf-automotivelinux.atlassian.net/browse/SPEC-5444) | E1 | 488 | 231 | Blocker idle 231 days on the agl-rdp Flutter over RDP work; please decide whether to close it as stale or downgrade it. |
+| [SPEC-5468](https://lf-automotivelinux.atlassian.net/browse/SPEC-5468) | E1 | 447 | 231 | Blocker idle 231 days on the source-han-sans build issue; please confirm whether it still reproduces on the current release. |
+| [SPEC-5483](https://lf-automotivelinux.atlassian.net/browse/SPEC-5483) | E1 | 378 | 231 | Blocker idle 231 days on the PI5 boot DTB issue; please confirm whether it still reproduces on the current release. |
+| [SPEC-5561](https://lf-automotivelinux.atlassian.net/browse/SPEC-5561) | E1 | 258 | 231 | Blocker idle 231 days on the qemuriscv EGL config failure; please confirm whether it still reproduces on the current release. |
+| [SPEC-5625](https://lf-automotivelinux.atlassian.net/browse/SPEC-5625) | E1, E4 | 125 | 125 | Blocker idle 125 days with no owner on the flutter fetch error; who will own it? |
+| [SPEC-5676](https://lf-automotivelinux.atlassian.net/browse/SPEC-5676) | E1 | 55 | 55 | Blocker idle 55 days on the Ultimate Unagi preparation; please provide a target fix date or confirm whether it really blocks a release. |
+| [SPEC-5687](https://lf-automotivelinux.atlassian.net/browse/SPEC-5687) | E1 | 35 | 35 | Blocker idle 35 days on the Jira write-group request; please provide a target date or confirm whether it really blocks a release. |
+| [SPEC-5700](https://lf-automotivelinux.atlassian.net/browse/SPEC-5700) | E1, E4 | 27 | 27 | Blocker idle 27 days with no owner on the Vibrant Vimba documentation; who will own it? |
+| [SPEC-5701](https://lf-automotivelinux.atlassian.net/browse/SPEC-5701) | E1, E4 | 27 | 27 | Blocker idle 27 days with no owner on the documentation typos; who will own it? |
+| [SPEC-5705](https://lf-automotivelinux.atlassian.net/browse/SPEC-5705) | E1, E4 | 27 | 27 | Blocker idle 27 days with no owner on the branch-name documentation update; who will own it? |
+| [SPEC-5712](https://lf-automotivelinux.atlassian.net/browse/SPEC-5712) | E1 | 15 | 15 | Blocker idle 15 days on the Vibrant Vimba 22.0.0 preparation; please provide a target fix date or confirm whether it really blocks a release. |
+| [SPEC-5713](https://lf-automotivelinux.atlassian.net/browse/SPEC-5713) | E1, E4 | 13 | 13 | Blocker idle 13 days with no owner on the kuksa-client rpm test error; who will own it? |
+| [SPEC-5719](https://lf-automotivelinux.atlassian.net/browse/SPEC-5719) | E4 | 1 | 1 | Blocker idle 1 day with no owner on the Bluetooth crash; who will own it? |
+| [SPEC-5375](https://lf-automotivelinux.atlassian.net/browse/SPEC-5375) | E2 | 587 | 182 | Critical idle 182 days on the rvgpu-proxy crash; please confirm whether it still reproduces on the current release. |
 
 **Rules**
 

@@ -4,7 +4,7 @@
 
 ## Summary
 
-Unagi 21.0.2 is Red, and the single biggest risk is the open blocker SPEC-5676 on that release. Across the program there are 156 open issues, with 25 new and 23 resolved in the last 30 days, for a net increase of 2.
+Unagi 21.0.2 is Red, and the single biggest risk is the open blocker SPEC-5676 on that release. Overall, there are 156 open issues, with 25 new and 23 resolved in the last 30 days for a net increase of 2; 18 open blockers/criticals remain, and 17 issues are currently escalated.
 
 ## Release readiness
 
@@ -43,12 +43,12 @@ Undated versions are rated on blockers, criticals, and slips only (Jira has no r
 
 ## Risks & slips
 
-- SPEC-5676 is the only open blocker on Unagi 21.0.2; the release has 1 open issue out of 5 scope items and is at 80.0% done.
-- SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, and SPEC-5719 are open blockers with no assignee.
-- SPEC-5375 is the only open critical issue; it is 587 days old and 182 days idle.
-- SPEC-4693, SPEC-4963, SPEC-5487, SPEC-5444, SPEC-5468, SPEC-5483, and SPEC-5561 are long-idle blockers and are on the escalation list.
+- SPEC-5676 is the only open issue on Unagi 21.0.2; it is a blocker and the release is Red.
 - Vimba 22.0.0 is Green, but it still has 2 open issues: SPEC-5672 and SPEC-5673.
 - master is Green, but it still has 5 open issues: SPEC-5585, SPEC-5586, SPEC-5672, SPEC-5673, and SPEC-5688.
+- SPEC-4693, SPEC-4963, SPEC-5487, SPEC-5444, SPEC-5468, SPEC-5483, and SPEC-5561 are long-open blockers and are escalated.
+- SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, and SPEC-5719 are open blockers with no assignee.
+- SPEC-5375 is a critical issue and is escalated.
 - Hygiene remains weak: 150 issues have no fix version, 97 have no component, 50 have no assignee, and 130 are stale.
 
 No open issues in released or past-due versions.
@@ -64,10 +64,11 @@ No open issues in released or past-due versions.
 
 ## Asks / decisions needed
 
-- Assign an owner to SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, and SPEC-5719.
-- Confirm the plan to clear SPEC-5676 for Unagi 21.0.2.
-- Decide whether SPEC-5375 needs escalation beyond the current program tracking.
-- Confirm whether SPEC-5672 and SPEC-5673 should be treated as shared work across Vimba 22.0.0 and master.
+- Assign owners to SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, and SPEC-5719.
+- Confirm the plan for SPEC-5676 so Unagi 21.0.2 can move off Red.
+- Confirm whether SPEC-5672 and SPEC-5673 are expected to remain open on both Vimba 22.0.0 and master.
+- Review the escalated blockers SPEC-4693, SPEC-4963, SPEC-5487, SPEC-5444, SPEC-5468, SPEC-5483, and SPEC-5561 for priority and next action.
+- Review SPEC-5375 for priority and next action.
 
 ## This period
 
@@ -77,7 +78,7 @@ No open issues in released or past-due versions.
 
 ## Next steps
 
-- Triage the 17 escalated issues on the agenda.
-- Work the open blocker and critical queue first.
-- Reduce the no-assignee and no-component hygiene backlog.
-- Recheck release status for Unagi 21.0.2, Vimba 22.0.0, and master after blocker updates.
+- Continue triage on the 18 open blockers/criticals.
+- Work down the 17 escalated issues.
+- Clean up issue hygiene for fix version, component, assignee, and stale items.
+- Track release readiness for Unagi 21.0.2 and Vimba 22.0.0 against the remaining open issues.
