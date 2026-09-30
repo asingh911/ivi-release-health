@@ -19,6 +19,8 @@ A GitHub Actions job runs the whole pipeline every Monday and commits the report
 
 ## Web app
 
+**Live (invite-only):** https://ivi-release-health-wdfjjdcehdu8nuwwhnu9kw.streamlit.app
+
 `streamlit_app.py` is an interactive view of the same report, open only to people you share it with: send them
 a share link (`https://<app>/?key=<SHARE_KEY>`, one click, and the key is removed from the address bar once used)
 or a password (`APP_PASSWORD`). Rotate either secret to revoke access. Change the window, RAG and escalation thresholds, agenda size, or target release dates in the
