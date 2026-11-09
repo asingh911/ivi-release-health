@@ -1,0 +1,44 @@
+{
+ "status_sections": {
+  "Summary": "Unagi 21.0.4 is Red, and the single biggest risk is the open blocker SPEC-5757 on that release. Across the program, there are 179 open issues, 33 new in the last 30 days, 17 resolved in the last 30 days, and 24 open blockers/criticals.",
+  "Risks & slips": "- SPEC-5757 is the only open issue on Unagi 21.0.4; it is a blocker and keeps the release Red.\n- SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, SPEC-5734, SPEC-5740, SPEC-5741, SPEC-5747, and SPEC-5758 are open blocker/critical items with no assignee.\n- SPEC-4693, SPEC-4963, SPEC-5487, SPEC-5444, SPEC-5468, SPEC-5483, SPEC-5561, SPEC-5687, SPEC-5719, and SPEC-5754 are open blocker items that are already escalated.\n- SPEC-5375 is an open critical item and is escalated.\n- Hygiene remains weak: 173 issues have no fix version, 113 have no component, 56 have no assignee, and 149 are stale.",
+  "Asks / decisions needed": "- Assign owners to SPEC-5625, SPEC-5700, SPEC-5701, SPEC-5705, SPEC-5713, SPEC-5734, SPEC-5740, SPEC-5741, SPEC-5747, and SPEC-5758.\n- Confirm priority and next action for SPEC-5757 so Unagi 21.0.4 can move off Red.\n- Review whether SPEC-4693, SPEC-4963, SPEC-5487, SPEC-5444, SPEC-5468, SPEC-5483, SPEC-5561, SPEC-5687, SPEC-5719, SPEC-5754, and SPEC-5375 need program-level escalation or schedule adjustment.",
+  "Next steps": "- Work the open blocker/critical set first, starting with the escalated items.\n- Triage the 10 unassigned blocker/critical issues and assign owners.\n- Clean up issue hygiene for no fix version, no component, no assignee, and stale items.\n- Track progress on Vimba 22.0.0 and master, which are Green with 2 and 5 open issues respectively."
+ },
+ "agenda_questions": {
+  "SPEC-5757": "What is the target date for the Ultimate Unagi v21.0.5 prep, and does it still block the release?",
+  "SPEC-4693": "Given the long idle time, should the Weston ini mix-ups be closed as stale or downgraded?",
+  "SPEC-4963": "Does the RCar GPU crash reproduce on the current release?",
+  "SPEC-5487": "Does the CI fetch failure still reproduce on the current release?",
+  "SPEC-5444": "Given the long idle time, should the agl-rdp over RDP work be closed as stale or downgraded?",
+  "SPEC-5468": "Given the long idle time, should the source-han-sans build issue be closed as stale or downgraded?",
+  "SPEC-5483": "Given the long idle time, should the PI5 dtb boot issue be closed as stale or downgraded?",
+  "SPEC-5561": "Does the qemuriscv EGL config failure reproduce on the current release?",
+  "SPEC-5625": "Does the flutter fetch error reproduce on the current release?",
+  "SPEC-5687": "What is the target date for adding the user to the Jira write group?"
+ },
+ "escalation_notes": {
+  "SPEC-5625": "Blocker open 165 days and idle 165 days with no owner; who will own the quillback flutter fetch error?",
+  "SPEC-5700": "Blocker open 67 days and idle 67 days with no owner; who will own the Vibrant Vimba documentation task?",
+  "SPEC-5701": "Blocker open 67 days and idle 67 days with no owner; who will own the documentation typo fix?",
+  "SPEC-5705": "Blocker open 67 days and idle 67 days with no owner; who will own the branch-name documentation update?",
+  "SPEC-5713": "Blocker open 53 days and idle 53 days with no owner; who will own the kuksa-client rpm transaction test error?",
+  "SPEC-5734": "Blocker open 19 days and idle 15 days with no owner; who will own the meta shell UI work?",
+  "SPEC-5740": "Blocker open 13 days and idle 13 days with no owner; who will own the new flutter-surround-view repository request?",
+  "SPEC-5741": "Blocker open 13 days and idle 13 days with no owner; who will own the Vibrant Vimba 22.0.1 preparation?",
+  "SPEC-5747": "Blocker open 11 days and idle 11 days with no owner; who will own the Unagi scarthgap update?",
+  "SPEC-5758": "Blocker open 6 days and idle 6 days with no owner; who will own the LiDAR demo build fixes?",
+  "SPEC-4693": "Blocker open 1379 days and idle 1314 days; please close the Weston ini mix-ups as stale or downgrade it.",
+  "SPEC-4963": "Blocker open 1097 days and idle 398 days; please close the RCar GPU crash as stale or downgrade it.",
+  "SPEC-5487": "Blocker open 411 days and idle 397 days; please close the flutter-sdk-native fetch failure as stale or downgrade it.",
+  "SPEC-5444": "Blocker open 528 days and idle 271 days; please close the agl-rdp flutter over rdp work as stale or downgrade it.",
+  "SPEC-5468": "Blocker open 487 days and idle 271 days; please close the source-han-sans build issue as stale or downgrade it.",
+  "SPEC-5483": "Blocker open 418 days and idle 271 days; please close the PI5 boot issue as stale or downgrade it.",
+  "SPEC-5561": "Blocker open 298 days and idle 271 days; please close the EGL config issue as stale or downgrade it.",
+  "SPEC-5687": "Blocker open 75 days and idle 75 days; please close the Jira write-group request as stale or downgrade it.",
+  "SPEC-5719": "Blocker open 41 days and idle 24 days; does the Bluetoothd crash reproduce on the current release?",
+  "SPEC-5754": "Blocker open 9 days and idle 9 days; what is the fix date for the Bluetooth HFP and PBAP work?",
+  "SPEC-5375": "Critical open 627 days and idle 222 days; please close the rvgpu-proxy crash as stale or downgrade it."
+ },
+ "tokens": 7888
+}
